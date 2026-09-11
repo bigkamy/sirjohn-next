@@ -1,10 +1,9 @@
 import "server-only";
-import { requireAdmin, requireUser } from "@/lib/auth/dal";
+import { requireUser } from "@/lib/auth/dal";
 import type { PaymentMethod } from "@/lib/checkout";
+import type { PaymentStatus } from "@/lib/order-status";
 import type { SelectedOptions } from "@/lib/product-options";
 import { createClient } from "@/lib/supabase/server";
-
-export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 
 export type OrderSummary = {
   orderNumber: string;
@@ -14,13 +13,9 @@ export type OrderSummary = {
   itemCount: number;
 };
 
-export type AdminOrderSummary = OrderSummary & {
-  customerName: string;
-  email: string;
-  paymentStatus: PaymentStatus;
-};
-
 export type OrderDetail = OrderSummary & {
+  id: string;
+  userId: string | null;
   paymentStatus: PaymentStatus;
   email: string;
   shippingAddress: {
@@ -40,6 +35,8 @@ export type OrderDetail = OrderSummary & {
   discount: number;
   items: {
     id: number;
+    /** Null once the product has been deleted; the line keeps its name and price. */
+    productId: number | null;
     productName: string;
     options: SelectedOptions;
     slug: string | null;
@@ -63,6 +60,8 @@ type ShippingAddressRow = {
 // Without generated database types supabase-js types every embed as an array, but
 // shipping_methods and products are to-one embeds, so the row shape is spelled out here.
 type OrderRow = {
+  id: string;
+  user_id: string | null;
   order_number: string;
   status: string;
   payment_status: PaymentStatus;
@@ -79,6 +78,7 @@ type OrderRow = {
   shipping_methods: { name: string } | null;
   order_items: {
     id: number;
+    product_id: number | null;
     product_name: string;
     options: SelectedOptions | null;
     unit_price: number | string;
@@ -88,7 +88,7 @@ type OrderRow = {
 };
 
 const ORDER_DETAIL_COLUMNS =
-  "order_number,status,payment_status,created_at,email,shipping_address,shipping_method,payment_method,coupon_code,subtotal,shipping,discount,total,shipping_methods(name),order_items(id,product_name,options,unit_price,quantity,products(slug,image))";
+  "id,user_id,order_number,status,payment_status,created_at,email,shipping_address,shipping_method,payment_method,coupon_code,subtotal,shipping,discount,total,shipping_methods(name),order_items(id,product_id,product_name,options,unit_price,quantity,products(slug,image))";
 
 const countItems = (items: { quantity: number }[]) => items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -123,54 +123,14 @@ export async function listOrders(limit?: number): Promise<OrderSummary[]> {
 
 export async function getOrder(orderNumber: string): Promise<OrderDetail | null> {
   const user = await requireUser(`/account/orders/${encodeURIComponent(orderNumber)}`);
-  return loadOrder(orderNumber, user.id);
+  return fetchOrderDetail(orderNumber, user.id);
 }
 
-export async function getOrderForAdmin(orderNumber: string): Promise<OrderDetail | null> {
-  await requireAdmin(`/admin/orders/${encodeURIComponent(orderNumber)}`);
-  return loadOrder(orderNumber, null);
-}
-
-/** All orders, newest first, one page at a time. RLS lets admins read every order. */
-export async function listOrdersForAdmin({ page = 1, pageSize = 25 }: { page?: number; pageSize?: number } = {}): Promise<{
-  orders: AdminOrderSummary[];
-  total: number;
-}> {
-  await requireAdmin("/admin/orders");
-  const supabase = await createClient();
-  const from = (Math.max(1, page) - 1) * pageSize;
-
-  const { data, error, count } = await supabase
-    .from("orders")
-    .select("order_number,status,payment_status,total,created_at,email,shipping_address,order_items(quantity)", {
-      count: "exact",
-    })
-    .order("created_at", { ascending: false })
-    .range(from, from + pageSize - 1);
-
-  // PostgREST answers "range not satisfiable" for a page past the end.
-  if (error?.code === "PGRST103") {
-    return { orders: [], total: count ?? 0 };
-  }
-  if (error) {
-    throw new Error(`Failed to load orders: ${error.message}`);
-  }
-
-  const orders = data.map((row) => ({
-    orderNumber: row.order_number,
-    status: row.status,
-    paymentStatus: row.payment_status,
-    total: Number(row.total),
-    createdAt: row.created_at,
-    itemCount: countItems(row.order_items),
-    customerName: (row.shipping_address as ShippingAddressRow).full_name,
-    email: row.email,
-  }));
-
-  return { orders, total: count ?? orders.length };
-}
-
-async function loadOrder(orderNumber: string, userId: string | null): Promise<OrderDetail | null> {
+/**
+ * One order with its items. Pass a user id to restrict it to that customer; the admin panel
+ * passes null after checking orders.view (RLS also lets staff read every order).
+ */
+export async function fetchOrderDetail(orderNumber: string, userId: string | null): Promise<OrderDetail | null> {
   const supabase = await createClient();
 
   let query = supabase.from("orders").select(ORDER_DETAIL_COLUMNS).eq("order_number", orderNumber);
@@ -190,6 +150,7 @@ async function loadOrder(orderNumber: string, userId: string | null): Promise<Or
   const address = order.shipping_address;
   const items = order.order_items.map((item) => ({
     id: item.id,
+    productId: item.product_id,
     productName: item.product_name,
     options: item.options ?? {},
     slug: item.products?.slug ?? null,
@@ -200,6 +161,8 @@ async function loadOrder(orderNumber: string, userId: string | null): Promise<Or
   }));
 
   return {
+    id: order.id,
+    userId: order.user_id,
     orderNumber: order.order_number,
     status: order.status,
     paymentStatus: order.payment_status,

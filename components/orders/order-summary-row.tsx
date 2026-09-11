@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDate, formatPrice } from "@/lib/format";
+import { orderStatusLabel } from "@/lib/order-status";
 import type { OrderSummary } from "@/lib/orders";
 
 export function OrderSummaryRow({ order }: { order: OrderSummary }) {
@@ -15,7 +16,7 @@ export function OrderSummaryRow({ order }: { order: OrderSummary }) {
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{order.status}</span>
+        <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{orderStatusLabel(order.status)}</span>
         <span className="font-semibold text-slate-900">{formatPrice(order.total)}</span>
       </div>
     </Link>

@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import * as z from "zod";
-import { requireAdmin } from "@/lib/auth/dal";
+import { logAdminError } from "@/lib/admin/log";
+import { requirePermission } from "@/lib/auth/dal";
 import type { FormState } from "@/lib/form-state";
 import type { ProductOptionGroup } from "@/lib/product-options";
 import { invalidateCatalog } from "@/lib/revalidate-catalog";
@@ -24,18 +25,23 @@ const productSchema = z
       .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: "Use lowercase letters, numbers, and single hyphens." }),
     brand: z.string().min(1, { error: "Enter the brand." }).max(60),
     category: z.string().min(1, { error: "Choose a category." }),
-    price: z.number({ error: "Enter a price." }).min(0).max(10000000),
-    originalPrice: z.number({ error: "Enter a number or leave blank." }).min(0).max(10000000).nullable(),
+    sku: z
+      .string()
+      .max(64, { error: "Keep the SKU to 64 characters." })
+      .regex(/^([A-Za-z0-9][A-Za-z0-9._-]*)?$/, { error: "Use letters, numbers, dots, dashes, or underscores." }),
     badge: z.string().max(24, { error: "Keep the badge to 24 characters." }),
+    price: z.number({ error: "Enter the price." }).min(0).max(10000000),
+    salePrice: z.number({ error: "Enter a number or leave blank." }).min(0).max(10000000).nullable(),
+    lowStockThreshold: z.number({ error: "Enter a whole number." }).int().min(0).max(100000),
     shortDescription: z.string().max(200),
     description: z.string().max(5000),
     image: imageUrlSchema,
     gallery: z.array(imageUrlSchema).max(8, { error: "Use at most 8 gallery images." }),
     stock: z.number({ error: "Enter the starting stock." }).int().min(0).max(100000),
   })
-  .refine((product) => product.originalPrice === null || product.originalPrice >= product.price, {
-    error: "The original price must be at least the selling price.",
-    path: ["originalPrice"],
+  .refine((product) => product.salePrice === null || product.salePrice < product.price, {
+    error: "The sale price must be lower than the regular price.",
+    path: ["salePrice"],
   });
 
 const TEXT_FIELDS = [
@@ -43,9 +49,11 @@ const TEXT_FIELDS = [
   "slug",
   "brand",
   "category",
-  "price",
-  "originalPrice",
+  "sku",
   "badge",
+  "price",
+  "salePrice",
+  "lowStockThreshold",
   "shortDescription",
   "description",
   "image",
@@ -84,7 +92,7 @@ function readOptionGroups(formData: FormData): { groups: ProductOptionGroup[]; e
 }
 
 export async function saveProduct(_state: FormState, formData: FormData): Promise<FormState> {
-  await requireAdmin("/admin/products");
+  await requirePermission("catalog.manage", "/admin/products");
 
   const idText = formText(formData, "id");
   const id = idText ? Number(idText) : null;
@@ -101,9 +109,11 @@ export async function saveProduct(_state: FormState, formData: FormData): Promis
     slug: values.slug || slugify(values.name),
     brand: values.brand,
     category: values.category,
-    price: numberOrNaN(values.price),
-    originalPrice: values.originalPrice === "" ? null : numberOrNaN(values.originalPrice),
+    sku: values.sku,
     badge: values.badge,
+    price: numberOrNaN(values.price),
+    salePrice: values.salePrice === "" ? null : numberOrNaN(values.salePrice),
+    lowStockThreshold: values.lowStockThreshold === "" ? 5 : numberOrNaN(values.lowStockThreshold),
     shortDescription: values.shortDescription,
     description: values.description,
     image: values.image,
@@ -133,9 +143,12 @@ export async function saveProduct(_state: FormState, formData: FormData): Promis
     slug: product.slug,
     brand: product.brand,
     category: product.category,
-    price: product.price,
-    original_price: product.originalPrice,
+    sku: product.sku || null,
+    // On sale: customers pay the sale price and see the regular price struck through.
+    price: product.salePrice ?? product.price,
+    original_price: product.salePrice === null ? null : product.price,
     badge: product.badge || null,
+    low_stock_threshold: product.lowStockThreshold,
     short_description: product.shortDescription,
     description: product.description,
     image: product.image,
@@ -153,12 +166,14 @@ export async function saveProduct(_state: FormState, formData: FormData): Promis
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "Please check the highlighted fields.", fieldErrors: { slug: ["Another product already uses this slug."] }, values };
+      const field = error.message.includes("sku") ? "sku" : "slug";
+      const message = field === "sku" ? "Another product already uses this SKU." : "Another product already uses this slug.";
+      return { error: "Please check the highlighted fields.", fieldErrors: { [field]: [message] }, values };
     }
     if (error.code === "23503") {
       return { error: "Please check the highlighted fields.", fieldErrors: { category: ["Choose a category from the list."] }, values };
     }
-    console.error("Saving product failed:", error.message);
+    await logAdminError("product.save", "product", id === null ? null : String(id), error.message);
     return { error: "We couldn't save this product. Please try again.", values };
   }
   if (!data) {
@@ -166,12 +181,12 @@ export async function saveProduct(_state: FormState, formData: FormData): Promis
   }
 
   invalidateCatalog();
-  redirect("/admin/products?saved=1");
+  redirect(`/admin/products?saved=${id === null ? "created" : "updated"}`);
 }
 
 /** Adds (positive delta) or removes (negative delta) units relative to the live stock. */
 export async function adjustStock(productId: number, delta: number): Promise<AdminResult> {
-  await requireAdmin("/admin/products");
+  await requirePermission("inventory.manage", "/admin/inventory");
   if (!isPositiveInteger(productId) || !Number.isInteger(delta) || delta === 0 || Math.abs(delta) > 100000) {
     return { ok: false, message: "Enter a whole number of units." };
   }
@@ -181,7 +196,7 @@ export async function adjustStock(productId: number, delta: number): Promise<Adm
   if (error) {
     if (error.message === "stock_below_zero") return { ok: false, message: "Stock can't go below zero." };
     if (error.message === "product_not_found") return { ok: false, message: "This product no longer exists." };
-    console.error("Stock adjustment failed:", error.message);
+    await logAdminError("inventory.adjust", "product", String(productId), error.message);
     return { ok: false, message: "We couldn't update stock. Please try again." };
   }
 
@@ -189,24 +204,36 @@ export async function adjustStock(productId: number, delta: number): Promise<Adm
   return { ok: true, message: `Stock is now ${data}.`, stock: data as number };
 }
 
-/** Hides a product from the store (or shows it again). Real products are hidden rather than
- * deleted, so past orders keep their links. */
+export async function setLowStockThreshold(productId: number, threshold: number): Promise<AdminResult> {
+  await requirePermission("inventory.manage", "/admin/inventory");
+  if (!isPositiveInteger(productId) || !Number.isInteger(threshold) || threshold < 0 || threshold > 100000) {
+    return { ok: false, message: "Enter a whole number from 0 to 100,000." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("set_low_stock_threshold", { p_product_id: productId, p_threshold: threshold });
+  if (error) {
+    if (error.message === "product_not_found") return { ok: false, message: "This product no longer exists." };
+    await logAdminError("inventory.threshold", "product", String(productId), error.message);
+    return { ok: false, message: "We couldn't save the threshold. Please try again." };
+  }
+
+  invalidateCatalog();
+  return { ok: true, message: `Low-stock alert set to ${threshold}.` };
+}
+
+/** Hides a product from the store, or shows it again. */
 export async function setProductActive(productId: number, active: boolean): Promise<AdminResult> {
-  await requireAdmin("/admin/products");
+  await requirePermission("catalog.manage", "/admin/products");
   if (!isPositiveInteger(productId) || typeof active !== "boolean") {
     return { ok: false, message: "This product could not be found." };
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("products")
-    .update({ is_active: active })
-    .eq("id", productId)
-    .select("id")
-    .maybeSingle();
+  const { data, error } = await supabase.from("products").update({ is_active: active }).eq("id", productId).select("id").maybeSingle();
 
   if (error || !data) {
-    if (error) console.error("Product visibility update failed:", error.message);
+    if (error) await logAdminError("product.visibility", "product", String(productId), error.message);
     return { ok: false, message: "We couldn't update this product. Please try again." };
   }
 
@@ -215,16 +242,34 @@ export async function setProductActive(productId: number, active: boolean): Prom
 }
 
 /**
- * Deletes every product flagged as sample data. Past orders keep their item names and prices
- * (order_items stores a copy); sample items disappear from carts and wishlists.
+ * Deletes a product. Past orders keep the item's name and price (order_items stores a copy);
+ * it disappears from carts, wishlists, and reviews.
  */
+export async function deleteProduct(productId: number): Promise<AdminResult> {
+  await requirePermission("catalog.manage", "/admin/products");
+  if (!isPositiveInteger(productId)) {
+    return { ok: false, message: "This product could not be found." };
+  }
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("products").delete().eq("id", productId).select("id,name").maybeSingle();
+  if (error || !data) {
+    if (error) await logAdminError("product.delete", "product", String(productId), error.message);
+    return { ok: false, message: "We couldn't delete this product. Please try again." };
+  }
+
+  invalidateCatalog();
+  return { ok: true, message: `Deleted “${data.name}”.` };
+}
+
+/** Deletes every product flagged as sample data. */
 export async function removeSampleProducts(): Promise<AdminResult> {
-  await requireAdmin("/admin/products");
+  await requirePermission("catalog.manage", "/admin/products");
 
   const supabase = await createClient();
   const { data, error } = await supabase.from("products").delete().eq("is_sample", true).select("id");
   if (error) {
-    console.error("Removing sample products failed:", error.message);
+    await logAdminError("product.remove_samples", "product", null, error.message);
     return { ok: false, message: "We couldn't remove the sample products. Please try again." };
   }
 

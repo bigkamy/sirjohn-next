@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PriceRows } from "@/components/cart/price-rows";
 import { paymentMethodLabels } from "@/lib/checkout";
 import { formatPrice } from "@/lib/format";
+import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-status";
 import type { OrderDetail } from "@/lib/orders";
 import { formatOptions } from "@/lib/product-options";
 
@@ -58,10 +59,10 @@ export function OrderDetails({ order }: { order: OrderDetail }) {
           <p>{order.shippingMethod}</p>
           <p>{paymentMethodLabels[order.paymentMethod] ?? order.paymentMethod}</p>
           <p className="mt-2 flex flex-wrap items-center gap-2">
-            Order: <span className={pillClass}>{order.status}</span>
+            Order: <span className={pillClass}>{orderStatusLabel(order.status)}</span>
           </p>
           <p className="mt-2 flex flex-wrap items-center gap-2">
-            Payment: <span className={pillClass}>{order.paymentStatus}</span>
+            Payment: <span className={pillClass}>{paymentStatusLabel(order.paymentStatus)}</span>
           </p>
         </div>
       </div>

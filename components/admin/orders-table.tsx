@@ -1,48 +1,45 @@
 import Link from "next/link";
+import { OrderStatusBadge, PaymentStatusBadge } from "@/components/admin/ui/badge";
+import { numericCell, Table, TBody, Td, Th, THead } from "@/components/admin/ui/table";
+import type { AdminOrderRow } from "@/lib/admin-orders";
 import { formatDate, formatPrice } from "@/lib/format";
-import type { AdminOrderSummary } from "@/lib/orders";
 
-export function OrdersTable({ orders }: { orders: AdminOrderSummary[] }) {
+export function OrdersTable({ orders, showCustomer = true }: { orders: AdminOrderRow[]; showCustomer?: boolean }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
-      <table className="min-w-full text-left text-sm text-slate-600">
-        <thead className="bg-[#f7f9f7] text-slate-700">
-          <tr>
-            <th className="px-4 py-3 font-semibold">Order</th>
-            <th className="px-4 py-3 font-semibold">Date</th>
-            <th className="px-4 py-3 font-semibold">Customer</th>
-            <th className="px-4 py-3 font-semibold">Total</th>
-            <th className="px-4 py-3 font-semibold">Status</th>
-            <th className="px-4 py-3 font-semibold">Payment</th>
+    <Table label="Orders">
+      <THead>
+        <Th>Order</Th>
+        <Th className="hidden sm:table-cell">Date</Th>
+        {showCustomer && <Th>Customer</Th>}
+        <Th>Status</Th>
+        <Th className="hidden md:table-cell">Payment</Th>
+        <Th className="text-right">Total</Th>
+      </THead>
+      <TBody>
+        {orders.map((order) => (
+          <tr key={order.orderNumber} className="hover:bg-slate-50/70">
+            <Td>
+              <Link href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`} className="font-semibold text-slate-900 hover:text-emerald-700">
+                #{order.orderNumber}
+              </Link>
+              <div className="text-xs text-slate-500">
+                <span className="sm:hidden">{formatDate(order.createdAt)} · </span>
+                {order.itemCount} {order.itemCount === 1 ? "item" : "items"}
+              </div>
+            </Td>
+            <Td className="hidden whitespace-nowrap sm:table-cell">{formatDate(order.createdAt)}</Td>
+            {showCustomer && (
+              <Td>
+                <div className="max-w-[220px] truncate text-slate-900">{order.customerName}</div>
+                <div className="max-w-[220px] truncate text-xs text-slate-500">{order.email}</div>
+              </Td>
+            )}
+            <Td><OrderStatusBadge status={order.status} /></Td>
+            <Td className="hidden md:table-cell"><PaymentStatusBadge status={order.paymentStatus} /></Td>
+            <Td className={`${numericCell} font-medium text-slate-900`}>{formatPrice(order.total)}</Td>
           </tr>
-        </thead>
-        <tbody>
-          {orders.length === 0 && (
-            <tr className="border-t border-slate-200">
-              <td colSpan={6} className="px-4 py-6 text-center text-slate-500">No orders yet.</td>
-            </tr>
-          )}
-          {orders.map((order) => (
-            <tr key={order.orderNumber} className="border-t border-slate-200">
-              <td className="px-4 py-3 font-medium text-slate-900">
-                <Link href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`} className="hover:text-emerald-700">
-                  #{order.orderNumber}
-                </Link>
-              </td>
-              <td className="whitespace-nowrap px-4 py-3">{formatDate(order.createdAt)}</td>
-              <td className="px-4 py-3">
-                <div className="text-slate-900">{order.customerName}</div>
-                <div className="text-xs text-slate-500">{order.email}</div>
-              </td>
-              <td className="px-4 py-3">{formatPrice(order.total)}</td>
-              <td className="px-4 py-3">
-                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">{order.status}</span>
-              </td>
-              <td className="px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{order.paymentStatus}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </TBody>
+    </Table>
   );
 }

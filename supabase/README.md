@@ -32,6 +32,8 @@ or paste each file in `migrations/` into the **SQL Editor**, in filename order, 
 | `20260913000000_accounts_options_payments.sql` | Product options on cart and order lines, one default address, payment fields, `payments`, `mark_order_paid` |
 | `20260914000000_admin_and_storefront.sql`   | Admin dashboard stats, stock adjustments, order status changes (cancel restocks), newsletter and contact form tables |
 | `20260915000000_catalog_readiness.sql`      | `products.is_sample` flag for demo data, category images                 |
+| `20260916000000_staff_roles_and_statuses.sql` | Staff roles (super admin, admin, manager, staff) and the `confirmed` / `refunded` order statuses |
+| `20260916000100_admin_platform.sql`         | Role-based permissions on every admin policy and function, staff activity log, verified product reviews, SKU and low-stock alerts, the `media` storage bucket, and the customer, staff, analytics and system-health functions. Existing admins become super admins |
 
 `seed.sql` is **sample data for development and testing** — six demo products (flagged
 `is_sample`, labelled “Sample” in the store, with a placeholder image and no ratings), the
@@ -54,17 +56,34 @@ work even when opened in a different browser from the one that requested them:
 | Confirm signup  | `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/account`             |
 | Reset password  | `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/account/reset-password` |
 
-## 4. Make yourself an admin
+## 4. Make yourself the super admin
 
-Register through `/register`, then run in the SQL Editor:
+Register through `/register` (or add the user under **Authentication → Users** with
+**Auto Confirm User**), then run in the SQL Editor:
 
 ```sql
-update public.profiles set role = 'admin'
+update public.profiles set role = 'super_admin'
 where id = (select id from auth.users where email = 'you@example.com');
 ```
 
-Roles can't be changed from the app: customers only have update rights on
-`first_name`, `last_name`, and `phone`.
+This is the only role you set by hand. Everyone else gets their role from `/admin/staff`:
+they register a normal account first, then a super admin, admin, or manager finds them by
+email and assigns a role. Customers can only ever update their own `first_name`,
+`last_name`, and `phone`, and nobody can change their own role.
+
+## Roles and permissions
+
+| Role        | Can do                                                                                               |
+| ----------- | ---------------------------------------------------------------------------------------------------- |
+| super_admin | Everything, including creating admins and other super admins                                         |
+| admin       | Everything except creating or changing admins and super admins; manages managers and staff           |
+| manager     | Catalog, inventory, orders (including cancel and refund), customers, coupons, reviews, analytics, payments; adds and removes staff-level members |
+| staff       | Dashboard without revenue, orders (status updates only), inventory; view-only products and customers |
+| customer    | No admin access                                                                                      |
+
+The mapping lives in the database (`role_permissions`, `assignable_roles`). Every policy
+and admin function checks `has_permission()`; the app reads the same list through
+`my_permissions()` to decide what to show, and every admin page and action checks it again.
 
 ## Pricing and checkout
 
@@ -82,7 +101,7 @@ Business rules live in tables, so they can be changed without a deploy:
 | Table              | Default                                                                  | Managed from        |
 | ------------------ | ------------------------------------------------------------------------ | ------------------- |
 | `shipping_methods` | Standard ₹799, free from ₹2,999 · Express ₹799                           | `/admin/shipping`   |
-| `coupons`          | `WELCOME10` (from `seed.sql`): 10% off orders ≥ ₹5,000, max ₹5,000 off | SQL Editor          |
+| `coupons`          | `WELCOME10` (from `seed.sql`): 10% off orders ≥ ₹5,000, max ₹5,000 off | `/admin/coupons`    |
 | `products.options` | Set per product (sample clubs: Hand Orientation + Shaft Flex)            | `/admin/products`   |
 | `categories`       | Clubs, Bags, Apparel, Accessories, Footwear, Balls                       | `/admin/categories` |
 
@@ -123,24 +142,42 @@ connected yet. The schema is ready for one:
 
 ## Access rules at a glance
 
-| Data               | Customers                                   | Admins                     |
-| ------------------ | ------------------------------------------- | -------------------------- |
-| Profiles           | Read own; update name and phone only        | Read all                   |
-| Cart, wishlist, addresses | Full control of their own rows only  | —                          |
-| Orders, order items | Read own; created only via `place_order`   | Read all; update orders    |
-| Products, categories, shipping methods | Read active rows            | Full control               |
-| Coupons, payments  | No access                                   | Coupons: full · Payments: read |
-| Newsletter, contact messages | Submit only (via functions), can't read back | Read (contact: also mark handled) |
+| Data               | Customers                                   | Staff roles (by permission) |
+| ------------------ | ------------------------------------------- | --------------------------- |
+| Profiles           | Read own; update name and phone only        | Read all (`customers.view`); roles change only through `admin_set_user_role` |
+| Cart, wishlist, addresses | Full control of their own rows only  | —                           |
+| Orders, order items | Read own; created only via `place_order`   | Read all (`orders.view`); status only through `admin_set_order_status` — no direct edits |
+| Products, categories | Read active rows                          | Read all (`catalog.view`); edit (`catalog.manage`); stock via `adjust_product_stock` (`inventory.manage`) |
+| Shipping methods   | Read active rows                            | Edit (`settings.manage`)    |
+| Coupons, payments  | No access                                   | Coupons (`coupons.manage`) · Payments: read (`payments.view`) |
+| Product reviews    | Read published reviews (public columns only); write through `submit_product_review` after a delivered order | Moderate (`reviews.manage`) |
+| Staff activity     | No access                                   | All (`security.view`, `staff.manage`); order history only for other staff |
+| Media bucket       | View files by URL                           | List (`catalog.view`); upload and delete (`catalog.manage`) |
+| Newsletter, contact messages | Submit only (via functions), can't read back | Admins and super admins read |
 
 ## Admin panel
 
-| Page               | What it does                                                                 |
-| ------------------ | ---------------------------------------------------------------------------- |
-| `/admin`           | Launch checklist (missing business details, sample products, placeholder images, draft policies), live figures from `admin_dashboard_stats`, and the latest orders |
-| `/admin/categories` | Add, rename, reorder, and delete categories and set their home page image. Renaming moves the products with it; categories with products can't be deleted |
-| `/admin/orders`    | All orders; each order page changes its status (`admin_set_order_status`). Cancelling returns stock and the coupon use; shipped orders can only be delivered |
-| `/admin/products`  | Add and edit products (including options and images), hide/show, add or remove stock with `adjust_product_stock` (relative, so it can't undo a sale made in the meantime), and remove all sample products |
-| `/admin/shipping`  | Shipping prices and free-shipping thresholds                                 |
+The admin panel has its own layout (sidebar, top bar, mobile drawer) and never shows the
+customer account area. Each section appears only to roles with its permission, and each
+page and action checks the permission again on the server.
+
+| Page                    | What it does                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `/admin`                | Live figures from `admin_dashboard_stats`, recent orders, customers, low stock, staff activity, and the launch checklist |
+| `/admin/analytics`      | Revenue, order and customer trends for 7/30/90 days; best and least-selling products |
+| `/admin/products`       | Search and filter; add, edit (`/admin/products/[id]/edit`), hide, or delete products; SKU, regular and sale price, options, images, low-stock alert |
+| `/admin/categories`     | Add, edit (name, slug, order, image), and delete categories; in-use categories can't be deleted |
+| `/admin/inventory`      | Stock levels and alerts; adjust stock relative to the live count             |
+| `/admin/media`          | Upload, copy, and delete images in the `media` storage bucket                |
+| `/admin/reviews`        | Publish, reject, or delete customer reviews                                  |
+| `/admin/orders`         | Search and filter by order and payment status; each order shows items, customer, address, payments, and its timeline. Cancel (unpaid) returns stock and the coupon use; refund (paid) optionally restocks |
+| `/admin/payments`       | Orders by payment status and payment records from the provider               |
+| `/admin/coupons`        | Create, edit, switch off, and delete coupons                                 |
+| `/admin/customers`      | Customers with order count and total spent; profile and order history        |
+| `/admin/staff`          | Add team members by email, change roles, remove access                       |
+| `/admin/settings`       | Shipping methods; business details and policy status (edited in code)        |
+| `/admin/security`       | Role and permission matrix, people with admin access, role-change log        |
+| `/admin/system-health`  | Live database, API, authentication, and storage checks; recent errors        |
 
 Contact messages and newsletter sign-ups are read in the Supabase dashboard
 (`contact_messages`, `newsletter_subscribers`) until an admin inbox is added.

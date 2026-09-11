@@ -1,42 +1,57 @@
-import Link from "next/link";
-import { AdminHeading } from "@/components/admin/admin-heading";
+import { ReceiptText } from "lucide-react";
 import { OrdersTable } from "@/components/admin/orders-table";
-import { listOrdersForAdmin } from "@/lib/orders";
+import { FilterBar, pageParam, Pagination, textParam } from "@/components/admin/ui/filter-bar";
+import { Card, EmptyState, PageHeader } from "@/components/admin/ui/primitives";
+import { listAdminOrders } from "@/lib/admin-orders";
+import { requirePermission } from "@/lib/auth/dal";
+import { ORDER_STATUS_LABELS, ORDER_STATUSES, PAYMENT_STATUS_LABELS, PAYMENT_STATUSES } from "@/lib/order-status";
 
 export const metadata = { title: "Orders" };
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 20;
 
 export default async function Page({ searchParams }: PageProps<"/admin/orders">) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, Number.parseInt(typeof pageParam === "string" ? pageParam : "1", 10) || 1);
-  // listOrdersForAdmin checks the admin role before reading.
-  const { orders, total } = await listOrdersForAdmin({ page, pageSize: PAGE_SIZE });
-  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  await requirePermission("orders.view", "/admin/orders");
+  const params = await searchParams;
+  const filters = { q: textParam(params.q), status: textParam(params.status), payment: textParam(params.payment) };
+  const page = pageParam(params.page);
+  const { orders, total } = await listAdminOrders({ ...filters, page, pageSize: PAGE_SIZE });
+  const filtered = Object.values(filters).some(Boolean);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <AdminHeading title="Orders" back={{ href: "/admin", label: "Back to dashboard" }} description={`${total} orders in total.`} />
+    <>
+      <PageHeader title="Orders" description={`${total} ${total === 1 ? "order" : "orders"}${filtered ? " match these filters" : " in total"}.`} />
 
-      <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-        <OrdersTable orders={orders} />
-
-        {pages > 1 && (
-          <nav aria-label="Pagination" className="mt-6 flex items-center justify-between gap-4 text-sm">
-            {page > 1 ? (
-              <Link href={`/admin/orders?page=${page - 1}`} className="font-semibold text-emerald-700">← Newer</Link>
-            ) : (
-              <span />
-            )}
-            <span className="text-slate-500">Page {page} of {pages}</span>
-            {page < pages ? (
-              <Link href={`/admin/orders?page=${page + 1}`} className="font-semibold text-emerald-700">Older →</Link>
-            ) : (
-              <span />
-            )}
-          </nav>
+      <Card>
+        <FilterBar
+          action="/admin/orders"
+          search={{ value: filters.q, placeholder: "Search by order number, email, or name", label: "Search orders" }}
+          selects={[
+            {
+              name: "status",
+              label: "Order status",
+              value: filters.status,
+              options: [{ value: "", label: "All statuses" }, ...ORDER_STATUSES.map((status) => ({ value: status, label: ORDER_STATUS_LABELS[status] }))],
+            },
+            {
+              name: "payment",
+              label: "Payment",
+              value: filters.payment,
+              options: [{ value: "", label: "Any payment" }, ...PAYMENT_STATUSES.map((status) => ({ value: status, label: PAYMENT_STATUS_LABELS[status] }))],
+            },
+          ]}
+        />
+        {orders.length > 0 ? (
+          <OrdersTable orders={orders} />
+        ) : (
+          <EmptyState
+            icon={<ReceiptText size={22} />}
+            title={filtered ? "No orders match these filters" : "No orders yet"}
+            description={filtered ? "Try a different search or clear the filters." : "Orders appear here as soon as customers check out."}
+          />
         )}
-      </div>
-    </main>
+        <Pagination action="/admin/orders" page={page} pageSize={PAGE_SIZE} total={total} params={filters} />
+      </Card>
+    </>
   );
 }

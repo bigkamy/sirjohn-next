@@ -1,10 +1,11 @@
 import "server-only";
-import { requireAdmin } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
 import { createClient } from "@/lib/supabase/server";
 
 export type AdminCategory = {
   id: number;
   name: string;
+  slug: string;
   image: string | null;
   sortOrder: number;
   /** Products in this category, including hidden ones. */
@@ -12,11 +13,11 @@ export type AdminCategory = {
 };
 
 export async function listCategoriesForAdmin(): Promise<AdminCategory[]> {
-  await requireAdmin("/admin/categories");
+  await requirePermission("catalog.view", "/admin/categories");
   const supabase = await createClient();
 
   const [categories, products] = await Promise.all([
-    supabase.from("categories").select("id,name,image,sort_order").order("sort_order").order("name"),
+    supabase.from("categories").select("id,name,slug,image,sort_order").order("sort_order").order("name"),
     supabase.from("products").select("category"),
   ]);
   if (categories.error || products.error) {
@@ -31,6 +32,7 @@ export async function listCategoriesForAdmin(): Promise<AdminCategory[]> {
   return categories.data.map((row) => ({
     id: row.id,
     name: row.name,
+    slug: row.slug,
     image: row.image,
     sortOrder: row.sort_order,
     productCount: counts.get(row.name) ?? 0,

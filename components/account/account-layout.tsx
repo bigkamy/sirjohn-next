@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Heart, LayoutDashboard, LogOut, MapPin, Package, Settings, ShieldCheck, User } from "lucide-react";
 import { logout } from "@/lib/auth/actions";
 import type { SessionUser } from "@/lib/auth/dal";
+import { isStaffRole } from "@/lib/auth/roles";
 
 const links = [
   { label: "Dashboard", href: "/account", icon: User },
@@ -19,7 +20,7 @@ export function AccountLayout({ user, children }: { user: SessionUser; children:
   const { firstName, lastName, role } = user.profile;
   const name = `${firstName} ${lastName}`.trim() || user.email;
   const initials = (firstName.charAt(0) + lastName.charAt(0) || user.email.charAt(0)).toUpperCase();
-  const navLinks = role === "admin" ? [...links, { label: "Admin Panel", href: "/admin", icon: LayoutDashboard }] : links;
+  const navLinks = isStaffRole(role) ? [...links, { label: "Admin Panel", href: "/admin", icon: LayoutDashboard }] : links;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

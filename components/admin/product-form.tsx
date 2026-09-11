@@ -2,26 +2,29 @@
 
 import Link from "next/link";
 import { startTransition, useActionState } from "react";
-import { FormAlert, FormField, TextAreaField } from "@/components/auth/form-controls";
+import { GalleryField, ImageField } from "@/components/admin/products/image-fields";
+import { Card, CardHeader } from "@/components/admin/ui/primitives";
+import { Checkbox, Field, FormError, Select, TextArea } from "@/components/admin/ui/fields";
+import { buttonClass } from "@/components/admin/ui/styles";
 import { saveProduct } from "@/lib/admin-product-actions";
 import type { AdminProduct } from "@/lib/admin-products";
-import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-images";
 
 const OPTION_SLOTS = 3;
-const sectionClass = "rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm";
 
 function savedValues(product?: AdminProduct): Record<string, string> {
   if (!product) {
-    return { isActive: "on", stock: "0" };
+    return { isActive: "on", stock: "0", lowStockThreshold: "5" };
   }
   return {
     name: product.name,
     slug: product.slug,
     brand: product.brand,
     category: product.category,
-    price: String(product.price),
-    originalPrice: product.originalPrice === null ? "" : String(product.originalPrice),
+    sku: product.sku ?? "",
     badge: product.badge ?? "",
+    price: String(product.regularPrice),
+    salePrice: product.salePrice === null ? "" : String(product.salePrice),
+    lowStockThreshold: String(product.lowStockThreshold),
     shortDescription: product.shortDescription,
     description: product.description,
     image: product.image,
@@ -41,7 +44,6 @@ export function ProductForm({ product, categories }: { product?: AdminProduct; c
   const [state, formAction, pending] = useActionState(saveProduct, undefined);
   const defaults: Record<string, string | undefined> = { ...savedValues(product), ...state?.values };
   const errors = state?.fieldErrors;
-  const categoryError = errors?.category?.[0];
 
   return (
     <form
@@ -56,145 +58,154 @@ export function ProductForm({ product, categories }: { product?: AdminProduct; c
       className="space-y-6"
     >
       {product && <input type="hidden" name="id" value={product.id} />}
+      <FormError message={state?.error} />
 
-      <section className={sectionClass}>
-        <h2 className="mb-5 text-xl font-bold text-slate-900">Details</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormField label="Name" name="name" required defaultValue={defaults.name} errors={errors?.name} />
-          <FormField label="URL slug (blank = from name)" name="slug" placeholder="apex-pro-driver" defaultValue={defaults.slug} errors={errors?.slug} />
-          <FormField label="Brand" name="brand" required defaultValue={defaults.brand} errors={errors?.brand} />
-          <div>
-            <label htmlFor="category" className="mb-2 block text-sm font-medium text-slate-700">Category</label>
-            <select
-              id="category"
-              name="category"
-              required
-              defaultValue={product?.category ?? ""}
-              aria-invalid={Boolean(categoryError)}
-              className="w-full rounded-2xl border border-slate-200 bg-[#f7f9f7] px-4 py-3 text-sm outline-none focus:border-emerald-500"
-            >
-              <option value="" disabled>Choose a category</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>{category}</option>
+      <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
+        <div className="space-y-6">
+          <Card>
+            <CardHeader title="Details" />
+            <div className="grid gap-4 p-5 md:grid-cols-2">
+              <Field label="Name" name="name" required defaultValue={defaults.name} errors={errors?.name} className="md:col-span-2" />
+              <Field label="Brand" name="brand" required defaultValue={defaults.brand} errors={errors?.brand} />
+              <Select label="Category" name="category" required defaultValue={defaults.category ?? ""} errors={errors?.category}>
+                <option value="" disabled>Choose a category</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </Select>
+              <Field label="SKU (optional)" name="sku" defaultValue={defaults.sku} errors={errors?.sku} placeholder="e.g. DRV-APEX-10" hint="Your stock-keeping code. Must be unique." />
+              <Field
+                label="URL slug"
+                name="slug"
+                defaultValue={defaults.slug}
+                errors={errors?.slug}
+                placeholder="apex-pro-driver"
+                hint="Leave blank to create it from the name."
+              />
+              <Field label="Badge (optional)" name="badge" defaultValue={defaults.badge} errors={errors?.badge} placeholder="New, Sale…" />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Description" />
+            <div className="grid gap-4 p-5">
+              <Field label="Short description" name="shortDescription" defaultValue={defaults.shortDescription} errors={errors?.shortDescription} hint="One line shown on the product page, under the price." />
+              <TextArea label="Description" name="description" rows={7} defaultValue={defaults.description} errors={errors?.description} />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Images" />
+            <div className="grid gap-5 p-5">
+              <ImageField name="image" label="Main image" required canUpload allowPlaceholder defaultValue={defaults.image} errors={errors?.image} />
+              <GalleryField canUpload defaultValue={defaults.gallery} errors={errors?.gallery} />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Options"
+              description="Choices a customer must make before buying, such as Hand Orientation or Shaft Flex. Separate values with commas; leave blank for simple products."
+            />
+            <div className="space-y-4 p-5">
+              {Array.from({ length: OPTION_SLOTS }, (_, slot) => (
+                <div key={slot} className="grid gap-4 md:grid-cols-[1fr_2fr]">
+                  <Field
+                    label={`Option ${slot + 1} name`}
+                    name={`optionName${slot}`}
+                    placeholder={slot === 0 ? "Hand Orientation" : undefined}
+                    defaultValue={defaults[`optionName${slot}`]}
+                  />
+                  <Field
+                    label={`Option ${slot + 1} values`}
+                    name={`optionValues${slot}`}
+                    placeholder={slot === 0 ? "Right Hand, Left Hand" : undefined}
+                    defaultValue={defaults[`optionValues${slot}`]}
+                  />
+                </div>
               ))}
-            </select>
-            {categoryError && <p className="mt-1.5 text-xs text-red-600">{categoryError}</p>}
-          </div>
-          <FormField label="Badge (optional)" name="badge" placeholder="New, Sale…" defaultValue={defaults.badge} errors={errors?.badge} />
-          <FormField
-            className="md:col-span-2"
-            label="Short description"
-            name="shortDescription"
-            defaultValue={defaults.shortDescription}
-            errors={errors?.shortDescription}
-          />
-          <TextAreaField
-            className="md:col-span-2"
-            label="Description"
-            name="description"
-            rows={6}
-            defaultValue={defaults.description}
-            errors={errors?.description}
-          />
-        </div>
-      </section>
-
-      <section className={sectionClass}>
-        <h2 className="mb-5 text-xl font-bold text-slate-900">Pricing and stock</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          <FormField label="Price (₹)" name="price" type="number" min={0} step="1" required defaultValue={defaults.price} errors={errors?.price} />
-          <FormField
-            label="Original price (₹, optional)"
-            name="originalPrice"
-            type="number"
-            min={0}
-            step="1"
-            defaultValue={defaults.originalPrice}
-            errors={errors?.originalPrice}
-          />
-          {product ? (
-            <div>
-              <p className="mb-2 block text-sm font-medium text-slate-700">Stock</p>
-              <p className="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-600">
-                {product.stock} — adjust from the products list
-              </p>
+              {errors?.options && <p className="text-sm text-red-600">{errors.options[0]}</p>}
+              {product && (
+                <p className="text-xs text-slate-500">
+                  Past orders keep the options they were bought with. Carts holding a choice you remove will ask the customer to add the item again.
+                </p>
+              )}
             </div>
-          ) : (
-            <FormField label="Starting stock" name="stock" type="number" min={0} step="1" required defaultValue={defaults.stock} errors={errors?.stock} />
-          )}
+          </Card>
         </div>
-      </section>
 
-      <section className={sectionClass}>
-        <h2 className="mb-5 text-xl font-bold text-slate-900">Images</h2>
-        <p className="-mt-3 mb-4 text-sm text-slate-600">
-          Use a full https:// address, or add the file to <code>public/images</code> and enter its path, e.g.{" "}
-          <code>/images/driver.jpg</code>. New products can start with <code>{PRODUCT_PLACEHOLDER_IMAGE}</code> until a photo is ready.
-        </p>
-        <div className="grid gap-4">
-          <FormField label="Main image URL" name="image" inputMode="url" required placeholder="https://… or /images/…" defaultValue={defaults.image} errors={errors?.image} />
-          <TextAreaField
-            label="Gallery image URLs (one per line, optional)"
-            name="gallery"
-            rows={4}
-            placeholder="https://…"
-            defaultValue={defaults.gallery}
-            errors={errors?.gallery}
-          />
-        </div>
-      </section>
-
-      <section className={sectionClass}>
-        <h2 className="mb-2 text-xl font-bold text-slate-900">Options</h2>
-        <p className="mb-5 text-sm text-slate-600">
-          Choices a customer must make before buying, such as Hand Orientation or Shaft Flex. Separate values with commas.
-          Leave blank for simple products.
-        </p>
-        <div className="space-y-4">
-          {Array.from({ length: OPTION_SLOTS }, (_, slot) => (
-            <div key={slot} className="grid gap-4 md:grid-cols-[1fr_2fr]">
-              <FormField
-                label={`Option ${slot + 1} name`}
-                name={`optionName${slot}`}
-                placeholder={slot === 0 ? "Hand Orientation" : undefined}
-                defaultValue={defaults[`optionName${slot}`]}
-              />
-              <FormField
-                label={`Option ${slot + 1} values`}
-                name={`optionValues${slot}`}
-                placeholder={slot === 0 ? "Right Hand, Left Hand" : undefined}
-                defaultValue={defaults[`optionValues${slot}`]}
+        <div className="space-y-6">
+          <Card>
+            <CardHeader title="Pricing" />
+            <div className="grid gap-4 p-5">
+              <Field label="Price (₹)" name="price" type="number" min={0} step="1" required defaultValue={defaults.price} errors={errors?.price} />
+              <Field
+                label="Sale price (₹, optional)"
+                name="salePrice"
+                type="number"
+                min={0}
+                step="1"
+                defaultValue={defaults.salePrice}
+                errors={errors?.salePrice}
+                hint="While set, customers pay this and see the regular price struck through."
               />
             </div>
-          ))}
+          </Card>
+
+          <Card>
+            <CardHeader title="Inventory" />
+            <div className="grid gap-4 p-5">
+              {product ? (
+                <div>
+                  <p className="mb-1.5 text-sm font-medium text-slate-700">Stock</p>
+                  <p className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-600">
+                    {product.stock} in stock ·{" "}
+                    <Link href={`/admin/inventory?q=${encodeURIComponent(product.name)}`} className="font-medium text-emerald-700">
+                      adjust in Inventory
+                    </Link>
+                  </p>
+                </div>
+              ) : (
+                <Field label="Starting stock" name="stock" type="number" min={0} step="1" required defaultValue={defaults.stock} errors={errors?.stock} />
+              )}
+              <Field
+                label="Low-stock alert at"
+                name="lowStockThreshold"
+                type="number"
+                min={0}
+                step="1"
+                defaultValue={defaults.lowStockThreshold}
+                errors={errors?.lowStockThreshold}
+                hint="The product is flagged as low stock at or below this many units."
+              />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Visibility" />
+            <div className="space-y-4 p-5">
+              <Checkbox name="isActive" label="Visible in the store" description="Hidden products can't be found or bought." defaultChecked={defaults.isActive === "on"} />
+              <Checkbox
+                name="isSample"
+                label="Sample data"
+                description="Labelled “Sample” in the store. Uncheck once the details and photos are real."
+                defaultChecked={defaults.isSample === "on"}
+              />
+            </div>
+          </Card>
         </div>
-        {errors?.options && <p className="mt-3 text-sm text-red-600">{errors.options[0]}</p>}
-        {product && (
-          <p className="mt-3 text-xs text-slate-500">
-            Past orders keep the options they were bought with. Carts holding a choice you remove will ask the customer to add the item again.
-          </p>
-        )}
-      </section>
+      </div>
 
-      <label className="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" name="isActive" defaultChecked={defaults.isActive === "on"} className="h-4 w-4 rounded border-slate-300 text-emerald-600" />
-        Show this product in the store
-      </label>
-
-      <label className="flex items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" name="isSample" defaultChecked={defaults.isSample === "on"} className="h-4 w-4 rounded border-slate-300 text-amber-500" />
-        Sample data — label it “Sample” in the store (uncheck once the details and photos are real)
-      </label>
-
-      {state?.error && <FormAlert error={state.error} />}
-
-      <div className="flex flex-wrap gap-3">
-        <button type="submit" disabled={pending} className="rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white disabled:opacity-60">
-          {pending ? "Saving…" : "Save Product"}
-        </button>
-        <Link href="/admin/products" className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700">
-          Cancel
-        </Link>
+      {/* Sticks to the bottom of the screen while the form is in view, so Save is always reachable. */}
+      <div className="sticky bottom-0 z-20 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          <Link href="/admin/products" className={buttonClass("secondary")}>
+            Cancel
+          </Link>
+          <button type="submit" disabled={pending} className={buttonClass("primary")}>
+            {pending ? "Saving…" : product ? "Save Product" : "Create Product"}
+          </button>
+        </div>
       </div>
     </form>
   );

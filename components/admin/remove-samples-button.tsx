@@ -1,38 +1,30 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { ConfirmButton } from "@/components/admin/ui/confirm-button";
+import { buttonClass } from "@/components/admin/ui/styles";
+import { useToast } from "@/components/admin/ui/toast";
 import { removeSampleProducts } from "@/lib/admin-product-actions";
 import { NETWORK_ERROR } from "@/lib/messages";
 
 export function RemoveSamplesButton({ count }: { count: number }) {
-  const [pending, startTransition] = useTransition();
-  const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null);
-
-  function remove() {
-    const noun = count === 1 ? "sample product" : `${count} sample products`;
-    if (!window.confirm(`Delete ${count === 1 ? "the" : "all"} ${noun}? Past orders keep their item details.`)) {
-      return;
-    }
-    startTransition(async () => {
-      setResult(await removeSampleProducts().catch(() => ({ ok: false, message: NETWORK_ERROR })));
-    });
-  }
+  const toast = useToast();
 
   return (
-    <div>
-      <button
-        type="button"
-        disabled={pending}
-        onClick={remove}
-        className="rounded-full border border-red-200 bg-white px-5 py-3 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
-      >
-        {pending ? "Removing…" : "Remove Sample Products"}
-      </button>
-      {result && (
-        <p role="status" className={`mt-2 text-sm ${result.ok ? "text-emerald-700" : "text-red-600"}`}>
-          {result.message}
-        </p>
-      )}
-    </div>
+    <ConfirmButton
+      label="Remove sample products"
+      title="Remove sample products?"
+      description={
+        <>
+          This deletes {count === 1 ? "the sample product" : `all ${count} sample products`}. Past orders keep their item names and
+          prices.
+        </>
+      }
+      confirmLabel="Remove samples"
+      className={buttonClass("danger", "sm")}
+      onConfirm={async () => {
+        const result = await removeSampleProducts().catch(() => ({ ok: false, message: NETWORK_ERROR }));
+        toast({ message: result.message, tone: result.ok ? "success" : "error" });
+      }}
+    />
   );
 }

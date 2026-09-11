@@ -2,8 +2,10 @@
 
 import { refresh, revalidatePath, revalidateTag } from "next/cache";
 import * as z from "zod";
-import { requireAdmin } from "@/lib/auth/dal";
+import { logAdminError } from "@/lib/admin/log";
+import { requirePermission } from "@/lib/auth/dal";
 import type { FormState } from "@/lib/form-state";
+import { isOrderStatus, ORDER_STATUS_LABELS } from "@/lib/order-status";
 import { invalidateCatalog } from "@/lib/revalidate-catalog";
 import { SHIPPING_CACHE_TAG } from "@/lib/shipping";
 import { createClient } from "@/lib/supabase/server";
@@ -16,40 +18,48 @@ const shippingSchema = z.object({
   freeOver: z.number({ error: "Enter an amount or leave blank." }).min(0).max(10000000).nullable(),
 });
 
-const ORDER_STATUSES = ["processing", "shipped", "delivered", "cancelled"] as const;
-
+// Messages for the rules admin_set_order_status enforces.
 const ORDER_STATUS_ERRORS: Record<string, string> = {
-  order_closed: "Delivered or cancelled orders can't be changed.",
-  order_shipped: "A shipped order can only be marked as delivered.",
+  order_closed: "Cancelled or refunded orders can't be changed.",
+  invalid_transition: "That status isn't allowed from the order's current status.",
+  order_paid: "This order has been paid, so it can't be cancelled. Mark it as refunded instead.",
+  order_not_paid: "Only paid orders can be refunded. Cancel an unpaid order instead.",
   order_not_found: "This order no longer exists.",
+  not_authorized: "Your role can't make this change.",
 };
 
-/** Sets an order's status. Cancelling returns its items to stock (see admin_set_order_status). */
-export async function updateOrderStatus(orderNumber: string, status: string): Promise<{ ok: boolean; message: string }> {
-  await requireAdmin("/admin/orders");
-  if (typeof orderNumber !== "string" || !(ORDER_STATUSES as readonly string[]).includes(status)) {
+/**
+ * Moves an order to a new status. Cancelling returns its items to stock and its coupon use;
+ * refunding returns the items to stock only when `restock` is true.
+ */
+export async function updateOrderStatus(orderNumber: string, status: string, restock = true): Promise<{ ok: boolean; message: string }> {
+  const staff = await requirePermission("orders.manage", "/admin/orders");
+  if (typeof orderNumber !== "string" || !isOrderStatus(status) || status === "pending" || typeof restock !== "boolean") {
     return { ok: false, message: "Choose a valid status." };
+  }
+  if ((status === "cancelled" || status === "refunded") && !staff.permissions.has("orders.cancel")) {
+    return { ok: false, message: "Your role can't cancel or refund orders." };
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.rpc("admin_set_order_status", { p_order_number: orderNumber, p_status: status });
+  const { error } = await supabase.rpc("admin_set_order_status", { p_order_number: orderNumber, p_status: status, p_restock: restock });
   if (error) {
     const message = ORDER_STATUS_ERRORS[error.message];
-    if (!message) console.error("Order status update failed:", error.message);
+    if (!message) await logAdminError("order.status", "order", orderNumber, error.message);
     return { ok: false, message: message ?? "We couldn't update this order. Please try again." };
   }
 
-  if (status === "cancelled") {
+  if (status === "cancelled" || (status === "refunded" && restock)) {
     // Stock went back up, so storefront stock levels are stale.
     invalidateCatalog();
   } else {
     refresh();
   }
-  return { ok: true, message: `Order marked as ${status}.` };
+  return { ok: true, message: `Order #${orderNumber} marked as ${ORDER_STATUS_LABELS[status].toLowerCase()}.` };
 }
 
 export async function updateShippingMethod(_state: FormState, formData: FormData): Promise<FormState> {
-  await requireAdmin("/admin/shipping");
+  await requirePermission("settings.manage", "/admin/settings");
 
   const code = formText(formData, "code");
   const isActive = formData.get("isActive") === "on";
@@ -98,7 +108,7 @@ export async function updateShippingMethod(_state: FormState, formData: FormData
     .maybeSingle();
 
   if (error || !data) {
-    if (error) console.error("Shipping update failed:", error.message);
+    if (error) await logAdminError("shipping.save", "shipping_method", code, error.message);
     return { error: "We couldn't save this shipping method.", values };
   }
 

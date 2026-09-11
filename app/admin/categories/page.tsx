@@ -1,30 +1,45 @@
-import { AdminHeading } from "@/components/admin/admin-heading";
+import { FolderTree } from "lucide-react";
 import { AddCategoryForm, CategoryRow } from "@/components/admin/category-forms";
+import { Card, CardHeader, EmptyState, PageHeader } from "@/components/admin/ui/primitives";
 import { listCategoriesForAdmin } from "@/lib/admin-categories";
+import { requirePermission } from "@/lib/auth/dal";
 
 export const metadata = { title: "Categories" };
 
 export default async function Page() {
-  // listCategoriesForAdmin checks the admin role before reading.
+  const staff = await requirePermission("catalog.view", "/admin/categories");
+  const canManage = staff.permissions.has("catalog.manage");
   const categories = await listCategoriesForAdmin();
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <AdminHeading
+    <>
+      <PageHeader
         title="Categories"
-        back={{ href: "/admin", label: "Back to dashboard" }}
-        description="Categories organise the shop filters, the menu, and the home page tiles. The first four by display order appear in the main menu. Renaming a category moves its products with it."
+        description="Categories drive the shop filters, the main menu (the first four by display order), and the home page tiles. Renaming a category moves its products with it."
       />
 
-      <AddCategoryForm />
+      <div className="grid items-start gap-6 xl:grid-cols-[1fr_400px]">
+        <Card>
+          <CardHeader title={`${categories.length} ${categories.length === 1 ? "category" : "categories"}`} />
+          {categories.length === 0 ? (
+            <EmptyState icon={<FolderTree size={22} />} title="No categories yet" description={canManage ? "Add your first category to start adding products." : undefined} />
+          ) : (
+            // Keyed by id alone so a rename doesn't remount the row and drop its state.
+            <ul className="divide-y divide-slate-100">
+              {categories.map((category) => (
+                <CategoryRow key={category.id} category={category} canManage={canManage} />
+              ))}
+            </ul>
+          )}
+        </Card>
 
-      <div className="mt-6 space-y-4">
-        {categories.length === 0 && <p className="text-sm text-slate-500">No categories yet.</p>}
-        {/* Keyed by id alone so a rename doesn't remount the row and drop its "Saved." message. */}
-        {categories.map((category) => (
-          <CategoryRow key={category.id} category={category} />
-        ))}
+        {canManage && (
+          <Card>
+            <CardHeader title="Add a category" />
+            <AddCategoryForm />
+          </Card>
+        )}
       </div>
-    </main>
+    </>
   );
 }

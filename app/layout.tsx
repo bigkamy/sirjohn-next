@@ -1,10 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { getCategories } from "@/lib/products";
-import { getFreeShippingThreshold } from "@/lib/shipping";
 import { siteConfig } from "@/lib/site-config";
 import { siteUrl } from "@/lib/site-url";
 
@@ -38,20 +34,14 @@ export const viewport: Viewport = {
   themeColor: siteConfig.brand.primaryColor,
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [freeShippingOver, categories] = await Promise.all([getFreeShippingThreshold(), getCategories()]);
-
+// Only the document shell: the storefront's header and footer live in app/(store)/layout.tsx
+// and the admin panel has its own layout in app/admin/layout.tsx.
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-[#f5f7f4] text-slate-900">
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader categories={categories} />
-          <div className="flex-1">{children}</div>
-          <SiteFooter freeShippingOver={freeShippingOver} categories={categories} />
-        </div>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      {/* Browser extensions (e.g. ColorZilla) add attributes to <body> before React loads. */}
+      <body className="min-h-full bg-[#f5f7f4] text-slate-900" suppressHydrationWarning>
+        {children}
       </body>
     </html>
   );

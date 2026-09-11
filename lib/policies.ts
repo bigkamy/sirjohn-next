@@ -65,7 +65,7 @@ export const policies: Record<PolicySlug, Policy> = {
       {
         heading: "Tracking your order",
         content: [
-          "When you are signed in, My Orders shows the status of each order: pending, processing, shipped, delivered, or cancelled.",
+          "When you are signed in, My Orders shows the status of each order: pending, confirmed, processing, shipped, delivered, cancelled, or refunded.",
           "{{Whether you share courier tracking details with customers, and how}}",
         ],
       },

@@ -5,8 +5,10 @@ Online store for golf equipment, built with Next.js 16 (App Router) and Supabase
 - Catalog with product options (hand orientation, shaft flex), wishlist, and search/filters
 - Cart that persists for guests (cookie) and signed-in customers (database), merged on login
 - Checkout priced entirely in the database, with stock locking and coupons
-- Customer accounts: orders, addresses, profile, password reset
-- Admin panel: dashboard with launch checklist, products and stock, categories, orders, shipping rates
+- Customer accounts: orders, addresses, profile, password reset, and verified product reviews
+- A separate admin panel at `/admin` with roles (super admin, admin, manager, staff): dashboard,
+  analytics, products, categories, inventory, media library, reviews, orders, payments, coupons,
+  customers, staff, settings, security, and system health — see [supabase/README.md](supabase/README.md#admin-panel)
 - Shipping, Returns & Refund, Privacy, and Terms pages
 
 ## Getting started

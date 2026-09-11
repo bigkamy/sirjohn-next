@@ -10,13 +10,14 @@ import { MAX_QUANTITY } from "@/lib/cart-limits";
 import { formatPrice } from "@/lib/format";
 import type { SelectedOptions } from "@/lib/product-options";
 import type { Product } from "@/lib/products";
+import type { PublicReview } from "@/lib/reviews";
 import { freeShippingLabel } from "@/lib/shipping-copy";
 
-const TABS = ["Description", "Specifications", "Shipping"] as const;
+const TABS = ["Description", "Specifications", "Shipping", "Reviews"] as const;
 
-type ProductDetailPageProps = { product: Product; related: Product[]; freeShippingOver: number | null };
+type ProductDetailPageProps = { product: Product; related: Product[]; freeShippingOver: number | null; reviews: PublicReview[] };
 
-export function ProductDetailPage({ product, related, freeShippingOver }: ProductDetailPageProps) {
+export function ProductDetailPage({ product, related, freeShippingOver, reviews }: ProductDetailPageProps) {
   const [selectedImage, setSelectedImage] = useState(product.gallery[0]);
   const [quantity, setQuantity] = useState(1);
   // Checked on the server when adding to cart; nothing is preselected so buyers choose deliberately.
@@ -179,7 +180,7 @@ export function ProductDetailPage({ product, related, freeShippingOver }: Produc
               onClick={() => setActiveTab(tab)}
               className={`border-b-2 px-2 py-3 hover:border-emerald-700 hover:text-emerald-700 ${activeTab === tab ? "border-emerald-700 text-emerald-700" : "border-transparent"}`}
             >
-              {tab}
+              {tab === "Reviews" ? `Reviews (${reviews.length})` : tab}
             </button>
           ))}
         </div>
@@ -208,6 +209,29 @@ export function ProductDetailPage({ product, related, freeShippingOver }: Produc
               <p>Delivery options, times, and charges for your address are shown at checkout before you place your order.</p>
             </>
           )}
+
+          {activeTab === "Reviews" &&
+            (reviews.length === 0 ? (
+              <p>No reviews yet. Customers who buy this product can review it from their order once it has been delivered.</p>
+            ) : (
+              <ul className="space-y-6">
+                {reviews.map((review) => (
+                  <li key={review.id} className="border-b border-slate-100 pb-6 last:border-b-0">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="flex text-amber-500" role="img" aria-label={`${review.rating} out of 5 stars`}>
+                        {Array.from({ length: 5 }, (_, index) => (
+                          <Star key={index} size={15} className={index < review.rating ? "fill-current" : "text-slate-300"} aria-hidden />
+                        ))}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-900">{review.authorName}</span>
+                      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">Verified purchase</span>
+                    </div>
+                    {review.title && <p className="mt-2 font-semibold text-slate-900">{review.title}</p>}
+                    <p className="mt-1 whitespace-pre-line">{review.body}</p>
+                  </li>
+                ))}
+              </ul>
+            ))}
         </div>
       </section>
 

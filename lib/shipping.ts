@@ -1,6 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { requireAdmin } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createPublicClient } from "@/lib/supabase/public";
 import { createClient } from "@/lib/supabase/server";
@@ -80,7 +80,7 @@ export const getActiveShippingRates = unstable_cache(
 );
 
 export async function listShippingMethodsForAdmin(): Promise<ShippingMethod[]> {
-  await requireAdmin("/admin/shipping");
+  await requirePermission("settings.manage", "/admin/settings");
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("shipping_methods")

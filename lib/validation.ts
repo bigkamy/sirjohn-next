@@ -1,6 +1,9 @@
 import * as z from "zod";
+import { supabaseUrl } from "@/lib/supabase/env";
 
 const PHONE_PATTERN = /^\+?[0-9][0-9\s-]{6,18}$/;
+// Files in the media library, which is served over plain http by a local Supabase.
+const MEDIA_URL_PREFIX = supabaseUrl ? `${supabaseUrl.replace(/\/+$/, "")}/storage/v1/object/public/` : null;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const phoneSchema = z.string().regex(PHONE_PATTERN, { error: "Enter a valid phone number." });
@@ -9,10 +12,12 @@ export const optionalPhoneSchema = z
   .string()
   .refine((value) => value === "" || PHONE_PATTERN.test(value), { error: "Enter a valid phone number." });
 
-/** A full https:// URL, or a path to a file in /public such as /images/driver.jpg. */
+/** A full https:// URL, a media library file, or a path to a file in /public such as /images/driver.jpg. */
 export const imageUrlSchema = z
   .string()
-  .regex(/^(https:\/\/\S+|\/\S+)$/, { error: "Use a full https:// address, or a path to a file in /public such as /images/driver.jpg." });
+  .refine((value) => /^(https:\/\/\S+|\/\S+)$/.test(value) || (MEDIA_URL_PREFIX !== null && value.startsWith(MEDIA_URL_PREFIX) && !/\s/.test(value)), {
+    error: "Use a full https:// address, or a path to a file in /public such as /images/driver.jpg.",
+  });
 
 export const pinCodeSchema =z.string().regex(/^[1-9][0-9]{5}$/, { error: "Enter a valid 6-digit PIN code." });
 

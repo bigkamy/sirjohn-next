@@ -1,5 +1,5 @@
 import "server-only";
-import { requireAdmin } from "@/lib/auth/dal";
+import { requirePermission } from "@/lib/auth/dal";
 import { POLICY_SLUGS, countPlaceholders, policies } from "@/lib/policies";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-images";
 import { missingBusinessDetails } from "@/lib/site-config";
@@ -16,7 +16,7 @@ export type ChecklistItem = {
 
 /** What still stands between the store and launch, for the admin dashboard. */
 export async function getLaunchChecklist(): Promise<ChecklistItem[]> {
-  await requireAdmin("/admin");
+  await requirePermission("settings.manage", "/admin");
   const supabase = await createClient();
 
   const [samples, placeholderImages] = await Promise.all([
