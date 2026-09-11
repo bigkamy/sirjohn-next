@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sir John Golf Co.
 
-## Getting Started
+Online store for golf equipment, built with Next.js 16 (App Router) and Supabase.
 
-First, run the development server:
+- Catalog with product options (hand orientation, shaft flex), wishlist, and search/filters
+- Cart that persists for guests (cookie) and signed-in customers (database), merged on login
+- Checkout priced entirely in the database, with stock locking and coupons
+- Customer accounts: orders, addresses, profile, password reset
+- Admin panel: dashboard with launch checklist, products and stock, categories, orders, shipping rates
+- Shipping, Returns & Refund, Privacy, and Terms pages
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # then fill in the values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Without Supabase settings the store runs on a small sample catalog, which is enough to work
+on the storefront. Accounts, checkout, and the admin panel need a Supabase project — see
+[supabase/README.md](supabase/README.md) for the schema, migrations, and dashboard settings.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command         | What it does                   |
+| --------------- | ------------------------------ |
+| `npm run dev`   | Development server             |
+| `npm run build` | Production build (type-checks) |
+| `npm run start` | Serve the production build     |
+| `npm run lint`  | ESLint                         |
 
-## Learn More
+## Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+| Name                            | Required            | Notes                                                         |
+| ------------------------------- | ------------------- | ------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Yes                 | Project URL                                                   |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes                 | Anon / publishable key (safe in the browser)                  |
+| `NEXT_PUBLIC_SITE_URL`          | Yes, in production  | e.g. `https://www.example.com` — canonical URLs, sitemap, auth email links |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Replacing the sample content
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Nothing below is real business information yet. The admin dashboard's **launch checklist**
+shows what is still outstanding.
 
-## Deploy on Vercel
+| What                           | Where                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| Business name, legal name, address, phone, email, hours, social links | [`lib/site-config.ts`](lib/site-config.ts) — anything left `null` is hidden on the site |
+| Customer reviews, About page figures | `testimonials` and `aboutStats` in `lib/site-config.ts` (hidden while empty)       |
+| Home, login, and About page photos | [`lib/site-images.ts`](lib/site-images.ts)                                          |
+| Products, photos, options, stock | `/admin/products`. Sample products are labelled “Sample”; remove them all from the dashboard or products page once your products are in |
+| Categories and their images    | `/admin/categories`                                                                     |
+| Shipping prices                | `/admin/shipping`                                                                       |
+| Policies                       | [`lib/policies.ts`](lib/policies.ts) — replace each highlighted `{{placeholder}}`. Draft policies show a notice and stay out of search results until complete |
+| Logo                           | `brand.logoSrc` in `lib/site-config.ts` (e.g. `/images/logo.svg`), or edit `brand.wordmark` |
+| Favicon and app icon           | Generated from `brand.monogram` and colours by `app/icon.tsx` and `app/apple-icon.tsx`. To use your own files, add `app/icon.png` (or `.svg`) and a 180×180 `app/apple-icon.png`, and delete the two `.tsx` files |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Product images can be a full `https://` URL or a file you place in `public/images/`
+(entered as `/images/your-file.jpg`). Products without a photo use
+`/images/product-placeholder.svg`, which the admin marks as “Placeholder image”.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project layout
+
+| Path                  | Contents                                                        |
+| --------------------- | --------------------------------------------------------------- |
+| `app/`                | Routes (storefront, `account/`, `admin/`, `policies/`, `api/`, `auth/`) |
+| `components/`         | UI, grouped by area                                             |
+| `lib/`                | Data access and Server Actions (`*-actions.ts`)                 |
+| `lib/auth/dal.ts`     | `requireUser` / `requireAdmin` — the checks every page and action uses |
+| `proxy.ts`            | Session refresh and redirects for signed-out visitors           |
+| `supabase/`           | Migrations, sample seed data, and setup guide                   |
