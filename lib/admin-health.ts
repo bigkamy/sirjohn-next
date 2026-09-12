@@ -1,5 +1,6 @@
 import "server-only";
 import { requirePermission } from "@/lib/auth/dal";
+import { isEmailConfigured } from "@/lib/email/send";
 import { MEDIA_BUCKET, MEDIA_FOLDER } from "@/lib/media";
 import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -34,12 +35,36 @@ type HealthPayload = {
   recent_errors: { created_at: string; action: string; summary: string }[];
 };
 
-/** Live checks of the database, Supabase API, authentication and storage, run on each visit. */
+/**
+ * Whether order confirmation emails can go out, and whether any have failed. The provider
+ * isn't called: a send-only API key is allowed to do nothing but send, so a test request
+ * would report a false failure.
+ */
+function emailCheck(failed: number, latencyMs: number): HealthCheck {
+  if (!isEmailConfigured()) {
+    return {
+      name: "Email",
+      status: "warning",
+      detail: "Not configured — order confirmation emails aren't being sent. Set RESEND_API_KEY and ORDER_EMAIL_FROM.",
+    };
+  }
+  if (failed > 0) {
+    return {
+      name: "Email",
+      status: "warning",
+      detail: `${failed} order ${failed === 1 ? "confirmation email has" : "confirmation emails have"} failed. Open the order to see why and resend.`,
+      latencyMs,
+    };
+  }
+  return { name: "Email", status: "ok", detail: "Configured · no failed order confirmations", latencyMs };
+}
+
+/** Live checks of the database, Supabase API, authentication, storage and email, run on each visit. */
 export async function getSystemHealth(): Promise<SystemHealth> {
   const staff = await requirePermission("security.view", "/admin/system-health");
   const supabase = await createClient();
 
-  const [database, api, auth, storage] = await Promise.all([
+  const [database, api, auth, storage, failedEmails] = await Promise.all([
     timed(async () => supabase.rpc("admin_system_health")),
     timed(async () => {
       try {
@@ -51,6 +76,7 @@ export async function getSystemHealth(): Promise<SystemHealth> {
     }),
     timed(async () => supabase.auth.getUser()),
     timed(async () => supabase.storage.from(MEDIA_BUCKET).list(MEDIA_FOLDER, { limit: 1 })),
+    timed(async () => supabase.from("orders").select("id", { count: "exact", head: true }).eq("confirmation_email_status", "failed")),
   ]);
 
   const health = database.value.error ? null : (database.value.data as HealthPayload);
@@ -69,6 +95,7 @@ export async function getSystemHealth(): Promise<SystemHealth> {
       : health?.media_bucket === false
         ? { name: "Storage", status: "warning", detail: "The media bucket is missing", latencyMs: storage.ms }
         : { name: "Storage", status: "ok", detail: "Media library reachable", latencyMs: storage.ms },
+    emailCheck(failedEmails.value.count ?? 0, failedEmails.ms),
   ];
 
   return {

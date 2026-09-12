@@ -2,12 +2,14 @@
 
 import type { PostgrestError } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import * as z from "zod";
 import { upsertAddress } from "@/lib/addresses";
 import { requireUser } from "@/lib/auth/dal";
 import { readCouponCode, writeCouponCode } from "@/lib/cart";
 import { PAYMENT_METHODS } from "@/lib/checkout";
 import { couponStatusMessage, type CouponStatus } from "@/lib/coupons";
+import { sendOrderConfirmation } from "@/lib/email/order-confirmation";
 import type { FormState } from "@/lib/form-state";
 import { createClient } from "@/lib/supabase/server";
 import { formText, phoneSchema, pinCodeSchema } from "@/lib/validation";
@@ -77,6 +79,12 @@ export async function placeOrder(_state: FormState, formData: FormData): Promise
   }
 
   await writeCouponCode(null);
+
+  // The order, its items, the stock and the emptied cart are all committed by now: place_order
+  // does the lot in one transaction. The confirmation email goes out after the response, so a
+  // slow or failing email provider can't hold up — or undo — a placed order.
+  const orderNumber = String(data.order_number);
+  after(() => sendOrderConfirmation(orderNumber));
 
   if (formData.get("saveAddress") === "on") {
     await upsertAddress(user.id, {

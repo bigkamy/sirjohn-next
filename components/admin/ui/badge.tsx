@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ROLE_LABELS, type UserRole } from "@/lib/auth/roles";
+import { CONFIRMATION_EMAIL_LABELS, type ConfirmationEmailStatus } from "@/lib/email/status";
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-status";
 
 export type BadgeTone = "neutral" | "success" | "warning" | "danger" | "info" | "violet";
@@ -46,6 +47,17 @@ export function OrderStatusBadge({ status }: { status: string }) {
 
 export function PaymentStatusBadge({ status }: { status: string }) {
   return <Badge tone={PAYMENT_TONES[status] ?? "neutral"}>{paymentStatusLabel(status)}</Badge>;
+}
+
+const EMAIL_TONES: Record<ConfirmationEmailStatus, BadgeTone> = {
+  pending: "neutral",
+  sending: "info",
+  sent: "success",
+  failed: "danger",
+};
+
+export function ConfirmationEmailBadge({ status }: { status: ConfirmationEmailStatus }) {
+  return <Badge tone={EMAIL_TONES[status]}>{CONFIRMATION_EMAIL_LABELS[status]}</Badge>;
 }
 
 export type StockState = "in_stock" | "low_stock" | "out_of_stock";

@@ -1,5 +1,6 @@
 import "server-only";
 import { requirePermission } from "@/lib/auth/dal";
+import { isEmailConfigured } from "@/lib/email/send";
 import { POLICY_SLUGS, countPlaceholders, policies } from "@/lib/policies";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-images";
 import { missingBusinessDetails } from "@/lib/site-config";
@@ -64,6 +65,16 @@ export async function getLaunchChecklist(): Promise<ChecklistItem[]> {
       title: "Complete your policies",
       detail: `${draftPolicies.map((slug) => policies[slug].title).join(", ")} still contain highlighted placeholders. Edit lib/policies.ts.`,
       link: { href: `/policies/${draftPolicies[0]}`, label: "Review policies" },
+    });
+  }
+
+  if (!isEmailConfigured()) {
+    items.push({
+      id: "email",
+      title: "Set up order confirmation emails",
+      detail:
+        "Customers aren't being emailed when they order. Add RESEND_API_KEY and ORDER_EMAIL_FROM to the server environment — see README.md.",
+      link: { href: "/admin/system-health", label: "Check system health" },
     });
   }
 

@@ -2,6 +2,7 @@ import "server-only";
 import { listActivity, type ActivityEntry } from "@/lib/admin-activity";
 import { ilike, RANGE_NOT_SATISFIABLE, rangeFor, searchTerm } from "@/lib/admin/search";
 import { requirePermission } from "@/lib/auth/dal";
+import { confirmationEmailStatus, type ConfirmationEmailState } from "@/lib/email/status";
 import { isOrderStatus, isPaymentStatus, type PaymentStatus } from "@/lib/order-status";
 import { fetchOrderDetail, type OrderDetail } from "@/lib/orders";
 import { createClient } from "@/lib/supabase/server";
@@ -94,7 +95,19 @@ export type AdminOrder = OrderDetail & {
   /** Null when this role can't see payment records (payments.view). */
   payments: PaymentRecord[] | null;
   activity: ActivityEntry[];
+  confirmationEmail: ConfirmationEmailState;
 };
+
+type EmailRow = {
+  confirmation_email_status: string;
+  confirmation_email_sent_at: string | null;
+  confirmation_email_error: string | null;
+  confirmation_email_attempts: number;
+  confirmation_email_attempted_at: string | null;
+};
+
+const EMAIL_COLUMNS =
+  "confirmation_email_status,confirmation_email_sent_at,confirmation_email_error,confirmation_email_attempts,confirmation_email_attempted_at";
 
 type PaymentRow = {
   id: string;
@@ -128,7 +141,7 @@ export async function getAdminOrder(orderNumber: string): Promise<AdminOrder | n
   }
 
   const supabase = await createClient();
-  const [payments, activity] = await Promise.all([
+  const [payments, activity, email] = await Promise.all([
     staff.permissions.has("payments.view")
       ? supabase
           .from("payments")
@@ -141,7 +154,27 @@ export async function getAdminOrder(orderNumber: string): Promise<AdminOrder | n
           })
       : Promise.resolve(null),
     listActivity({ entityType: "order", entityId: order.orderNumber, limit: 50 }),
+    supabase
+      .from("orders")
+      .select(EMAIL_COLUMNS)
+      .eq("id", order.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) throw new Error(`Failed to load the confirmation email status: ${error.message}`);
+        return data as EmailRow | null;
+      }),
   ]);
 
-  return { ...order, payments, activity };
+  return {
+    ...order,
+    payments,
+    activity,
+    confirmationEmail: {
+      status: confirmationEmailStatus(email?.confirmation_email_status),
+      sentAt: email?.confirmation_email_sent_at ?? null,
+      error: email?.confirmation_email_error ?? null,
+      attempts: email?.confirmation_email_attempts ?? 0,
+      lastAttemptAt: email?.confirmation_email_attempted_at ?? null,
+    },
+  };
 }

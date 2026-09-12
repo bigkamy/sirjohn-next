@@ -2,11 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActivityFeed } from "@/components/admin/activity-feed";
 import { OrderStatusControl } from "@/components/admin/order-status-control";
-import { OrderStatusBadge, PaymentStatusBadge } from "@/components/admin/ui/badge";
-import { Card, CardHeader, DetailList, PageHeader } from "@/components/admin/ui/primitives";
+import { ResendConfirmationEmail } from "@/components/admin/orders/resend-confirmation";
+import { ConfirmationEmailBadge, OrderStatusBadge, PaymentStatusBadge } from "@/components/admin/ui/badge";
+import { Card, CardHeader, DetailList, Notice, PageHeader } from "@/components/admin/ui/primitives";
 import { getAdminOrder } from "@/lib/admin-orders";
 import { requirePermission } from "@/lib/auth/dal";
 import { paymentMethodLabels } from "@/lib/checkout";
+import { isEmailConfigured } from "@/lib/email/send";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import { formatOptions } from "@/lib/product-options";
 
@@ -23,6 +25,8 @@ export default async function Page({ params }: PageProps<"/admin/orders/[id]">) 
 
   const can = (permission: Parameters<typeof staff.permissions.has>[0]) => staff.permissions.has(permission);
   const address = order.shippingAddress;
+  const email = order.confirmationEmail;
+  const emailConfigured = isEmailConfigured();
 
   return (
     <>
@@ -108,6 +112,49 @@ export default async function Page({ params }: PageProps<"/admin/orders/[id]">) 
                 { label: "Phone", value: address.phone },
               ]}
             />
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Confirmation email"
+              action={
+                can("orders.manage") ? (
+                  <ResendConfirmationEmail orderNumber={order.orderNumber} email={order.email} status={email.status} />
+                ) : undefined
+              }
+            />
+            <DetailList
+              items={[
+                { label: "Status", value: <ConfirmationEmailBadge status={email.status} /> },
+                {
+                  label: email.status === "sent" ? "Sent" : "Last attempt",
+                  value:
+                    email.status === "sent" && email.sentAt ? (
+                      formatDateTime(email.sentAt)
+                    ) : email.lastAttemptAt ? (
+                      formatDateTime(email.lastAttemptAt)
+                    ) : (
+                      <span className="text-slate-400">Never</span>
+                    ),
+                },
+                ...(email.attempts > 1 ? [{ label: "Attempts", value: String(email.attempts) }] : []),
+              ]}
+            />
+            {!emailConfigured ? (
+              <div className="border-t border-slate-100 p-5">
+                <Notice tone="warning">
+                  Email sending isn&apos;t set up yet, so no confirmation emails are going out. Add <code>RESEND_API_KEY</code> and{" "}
+                  <code>ORDER_EMAIL_FROM</code> to the server environment.
+                </Notice>
+              </div>
+            ) : (
+              email.error && (
+                <div className="border-t border-slate-100 p-5">
+                  {/* The provider's own wording, for staff. The customer is never shown it. */}
+                  <Notice tone="warning">Last failure: {email.error}</Notice>
+                </div>
+              )
+            )}
           </Card>
 
           <Card>

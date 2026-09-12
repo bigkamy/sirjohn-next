@@ -38,7 +38,48 @@ on the storefront. Accounts, checkout, and the admin panel need a Supabase proje
 | ------------------------------- | ------------------- | ------------------------------------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL`      | Yes                 | Project URL                                                   |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes                 | Anon / publishable key (safe in the browser)                  |
-| `NEXT_PUBLIC_SITE_URL`          | Yes, in production  | e.g. `https://www.example.com` — canonical URLs, sitemap, auth email links |
+| `NEXT_PUBLIC_SITE_URL`          | Yes, in production  | e.g. `https://www.example.com` — canonical URLs, sitemap, auth email links, and the link in the order confirmation email |
+| `RESEND_API_KEY`                | For order emails    | Server-side only. Never add `NEXT_PUBLIC_` to it                |
+| `ORDER_EMAIL_FROM`              | For order emails    | e.g. `Sir John Golf Co. <orders@your-domain.com>`               |
+| `ORDER_EMAIL_REPLY_TO`          | Optional            | Where customer replies go, if not the sender                    |
+
+## Order confirmation emails
+
+When an order is placed, the customer is emailed a confirmation: the items, options, totals,
+delivery address, and a **View Your Order** button. Sending goes through
+[Resend](https://resend.com) and happens on the server only.
+
+**Setting it up**
+
+1. Create a Resend account and add your sending domain under **Domains**. Resend gives you DNS
+   records (a DKIM `TXT`, and an `MX` plus `TXT` for the return path) to add at whoever hosts
+   your domain. The domain shows as **Verified** once they have propagated, usually within an
+   hour. Until then only Resend's own `onboarding@resend.dev` sender works, and it can only
+   email the address that owns the Resend account.
+2. **API Keys → Create API Key**, with sending access.
+3. Put the key in `RESEND_API_KEY` and your verified sender in `ORDER_EMAIL_FROM`, in
+   `.env.local` for development and in your host's environment settings for production. Never
+   commit either.
+
+**How it behaves**
+
+- The email is only sent after `place_order` has committed the order, its items and the stock
+  change. It is sent after the response, so it never slows down or blocks checkout.
+- Each order gets one email. The claim is taken in the database, so a refresh, a revisit or a
+  duplicate submission cannot produce a second one.
+- If sending fails the order still stands. The failure is recorded on the order and in the
+  activity log; the customer is never shown the provider's error.
+- Leave the variables unset and orders still work normally — no email goes out, and the admin
+  dashboard and **System health** both say so.
+
+**Checking it**
+
+- `/admin/orders/<order number>` shows the email's status, when it was sent, and any failure,
+  and staff with *Update order status* can resend it (at most once a minute per order).
+- Locally, without a Resend key nothing is sent. To see a real email, set both variables and
+  place a test order; with an unverified domain, send to the address that owns the Resend
+  account. In production, place a small live order and check **Resend → Emails** for the
+  delivery, then the order page in the admin for the recorded status.
 
 ## Replacing the sample content
 
@@ -69,5 +110,6 @@ Product images can be a full `https://` URL or a file you place in `public/image
 | `components/`         | UI, grouped by area                                             |
 | `lib/`                | Data access and Server Actions (`*-actions.ts`)                 |
 | `lib/auth/dal.ts`     | `requireUser` / `requireAdmin` — the checks every page and action uses |
+| `lib/email/`          | Order confirmation email: the provider call, the template, and the send that claims it |
 | `proxy.ts`            | Session refresh and redirects for signed-out visitors           |
 | `supabase/`           | Migrations, sample seed data, and setup guide                   |

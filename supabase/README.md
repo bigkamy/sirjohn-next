@@ -34,6 +34,7 @@ or paste each file in `migrations/` into the **SQL Editor**, in filename order, 
 | `20260915000000_catalog_readiness.sql`      | `products.is_sample` flag for demo data, category images                 |
 | `20260916000000_staff_roles_and_statuses.sql` | Staff roles (super admin, admin, manager, staff) and the `confirmed` / `refunded` order statuses |
 | `20260916000100_admin_platform.sql`         | Role-based permissions on every admin policy and function, staff activity log, verified product reviews, SKU and low-stock alerts, the `media` storage bucket, and the customer, staff, analytics and system-health functions. Existing admins become super admins |
+| `20260917000000_order_confirmation_email.sql` | Delivery state of each order's confirmation email, plus `claim_order_confirmation_email` and `record_order_confirmation_email` — the claim is what stops a second email going out |
 
 `seed.sql` is **sample data for development and testing** — six demo products (flagged
 `is_sample`, labelled “Sample” in the store, with a placeholder image and no ratings), the
