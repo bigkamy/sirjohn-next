@@ -11,6 +11,7 @@ export type AdminNavIcon =
   | "inventory"
   | "media"
   | "reviews"
+  | "homepage"
   | "orders"
   | "payments"
   | "coupons"
@@ -43,6 +44,10 @@ const ADMIN_NAV: { title: string; items: NavEntry[] }[] = [
       { label: "Media", href: "/admin/media", icon: "media", permission: "catalog.view" },
       { label: "Reviews", href: "/admin/reviews", icon: "reviews", permission: "reviews.manage" },
     ],
+  },
+  {
+    title: "Storefront",
+    items: [{ label: "Homepage Hero", href: "/admin/homepage", icon: "homepage", permission: "content.manage" }],
   },
   {
     title: "Sales",

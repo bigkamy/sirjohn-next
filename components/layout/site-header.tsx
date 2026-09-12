@@ -54,8 +54,10 @@ export function SiteHeader({ categories }: { categories: string[] }) {
             <BrandLogo />
           </Link>
 
-          <form action="/shop" role="search" className="hidden flex-1 items-center gap-3 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2 md:flex">
-            <select name="category" aria-label="Category" className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none">
+          {/* From lg, where the menu button disappears: below that, search lives in the menu
+              panel, and showing both left the row too narrow to fit. */}
+          <form action="/shop" role="search" className="hidden min-w-0 flex-1 items-center gap-3 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2 lg:flex">
+            <select name="category" aria-label="Category" className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none">
               <option value="">All Categories</option>
               {categories.map((category) => (
                 <option key={category} value={category}>{category}</option>
@@ -66,9 +68,9 @@ export function SiteHeader({ categories }: { categories: string[] }) {
               name="q"
               aria-label="Search products"
               placeholder="Search golf products..."
-              className="flex-1 bg-transparent px-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+              className="min-w-0 flex-1 bg-transparent px-2 text-sm text-slate-700 outline-none placeholder:text-slate-400"
             />
-            <button type="submit" aria-label="Search" className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0f172a] text-white">
+            <button type="submit" aria-label="Search" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#0f172a] text-white">
               <Search size={16} />
             </button>
           </form>

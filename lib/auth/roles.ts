@@ -31,6 +31,7 @@ export const PERMISSIONS = [
   "staff.manage",
   "settings.manage",
   "security.view",
+  "content.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -52,6 +53,7 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   "staff.manage": "Manage team members",
   "settings.manage": "Change store settings",
   "security.view": "View security and system health",
+  "content.manage": "Edit home page content",
 };
 
 export function isStaffRole(role: unknown): role is StaffRole {

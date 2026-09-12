@@ -29,7 +29,9 @@ export function MobileMenu({ items, categories }: MobileMenuProps) {
 
       {open && (
         <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 border-b border-slate-200 bg-white px-4 py-5 shadow-lg lg:hidden">
-          <form action="/shop" role="search" onSubmit={close} className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2">
+          {/* No onSubmit here: closing the panel unmounts this form mid-submit and the browser
+              then cancels the navigation. The next page renders with the menu closed anyway. */}
+          <form action="/shop" role="search" className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2">
             <select name="category" aria-label="Category" className="rounded-full border border-slate-200 bg-white px-2 py-2 text-sm text-slate-700 outline-none">
               <option value="">All</option>
               {categories.map((category) => (

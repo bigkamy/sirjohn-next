@@ -19,6 +19,17 @@ export const imageUrlSchema = z
     error: "Use a full https:// address, or a path to a file in /public such as /images/driver.jpg.",
   });
 
+/**
+ * A link a staff member may point a button at: a path on this site, or a full https address.
+ * Refuses javascript: and data: URLs, protocol-relative "//host" links, and anything with
+ * whitespace. is_safe_link in the database enforces the same rule.
+ */
+export const linkUrlSchema = z.string().refine((value) => /^\/([^/\s]\S*)?$/.test(value) || /^https:\/\/[^\s/]+(\/\S*)?$/.test(value), {
+  error: "Use a path on this site such as /shop, or a full https:// address.",
+});
+
+export const isExternalLink = (url: string) => url.startsWith("https://");
+
 export const pinCodeSchema =z.string().regex(/^[1-9][0-9]{5}$/, { error: "Enter a valid 6-digit PIN code." });
 
 /** Parses a numeric form field; blank becomes NaN so schemas can reject it. */
