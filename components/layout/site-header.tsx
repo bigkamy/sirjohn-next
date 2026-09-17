@@ -9,31 +9,21 @@ import { navIcon } from "@/components/layout/nav-icons";
 import { ShopperSync } from "@/components/shopper/shopper-sync";
 import { siteConfig } from "@/lib/site-config";
 
-/** The first categories by display order (set in /admin/categories) appear in the menu. */
-const MENU_CATEGORIES = 4;
-
 /**
- * Categories deliberately kept out of the menu. Applied after the slice above rather than
- * before, so leaving one out doesn't pull the next category up to take its place — the menu
- * gets shorter instead of quietly swapping in Footwear or Balls.
+ * A fixed menu: no category links. Categories are still reachable from the search box's
+ * dropdown, the shop's own filters, and the home page tiles — the `categories` prop below
+ * feeds those, which is why it is still passed in.
  */
-const MENU_EXCLUDED_CATEGORIES = new Set(["Clubs", "Apparel", "Accessories"]);
+const NAV_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/shop" },
+  { label: "About Us", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
 
 export function SiteHeader({ categories }: { categories: string[] }) {
   const { contact, country } = siteConfig;
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "Shop", href: "/shop" },
-    ...categories
-      .slice(0, MENU_CATEGORIES)
-      .filter((category) => !MENU_EXCLUDED_CATEGORIES.has(category))
-      .map((category) => ({
-        label: category,
-        href: `/shop?category=${encodeURIComponent(category)}`,
-      })),
-    { label: "About Us", href: "/about" },
-    { label: "Contact", href: "/contact" },
-  ];
+  const navItems = NAV_ITEMS;
 
   return (
     <>
@@ -106,7 +96,9 @@ export function SiteHeader({ categories }: { categories: string[] }) {
         </div>
 
         <nav aria-label="Main" className="border-t border-[#f1ece3] bg-[#faf8f4]">
-          <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4 py-4 text-sm font-medium text-slate-700 sm:justify-between lg:px-8">
+          {/* Right-aligned from sm up. Below that the row stays centred: it can overflow on a
+              narrow phone, and end-aligned flex content is awkward to scroll back into view. */}
+          <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4 py-4 text-sm font-medium text-slate-700 sm:justify-end lg:px-8">
             {navItems.map((item) => {
               const Icon = navIcon(item.label);
               return (
