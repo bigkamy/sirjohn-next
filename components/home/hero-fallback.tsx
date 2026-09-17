@@ -14,7 +14,7 @@ import { siteImages } from "@/lib/site-images";
 export function HeroFallback({ lowestPrice, biggestDiscount }: { lowestPrice: number | null; biggestDiscount: number }) {
   const heroSlides = [
     {
-      title: "Engineered for Performance",
+      title: "Engineered for Best Performance",
       subtitle: "Play every shot with precision.",
       description: "Premium golf equipment crafted for distance, control, and confidence on every round.",
       cta: "Shop Now",
