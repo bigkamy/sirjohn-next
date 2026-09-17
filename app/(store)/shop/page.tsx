@@ -1,4 +1,5 @@
 import { ShopPage } from "@/components/shop/shop-page";
+import { catalogPreviewEnabled } from "@/lib/catalog-preview";
 import { getCategories, getProducts } from "@/lib/products";
 
 // Re-fetch catalog prices and stock every minute; checkout always re-prices from the database.
@@ -11,6 +12,10 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
-  return <ShopPage products={products} categories={categories} />;
+  const [products, categories, preview] = await Promise.all([
+    getProducts(),
+    getCategories(),
+    catalogPreviewEnabled(),
+  ]);
+  return <ShopPage products={products} categories={categories} preview={preview} />;
 }

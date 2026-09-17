@@ -1,9 +1,11 @@
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
+import { catalogPreviewEnabled } from "@/lib/catalog-preview";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-images";
 import type { ProductOptionGroup } from "@/lib/product-options";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createPublicClient } from "@/lib/supabase/public";
+import { createClient as createSessionClient } from "@/lib/supabase/server";
 
 export type Product = {
   id: number;
@@ -128,6 +130,23 @@ export async function getProducts(): Promise<Product[]> {
     return sampleProducts.filter((product) => product.price > MINIMUM_SELLABLE_PRICE);
   }
 
+  // Local preview for staff (lib/catalog-preview.ts): reads through the session, so row level
+  // security is what allows the hidden rows, and drops the two storefront conditions to show
+  // what the shop will look like once prices are set. Never true in a production build.
+  if (await catalogPreviewEnabled()) {
+    const { data, error } = await (await createSessionClient())
+      .from("products")
+      .select(PRODUCT_COLUMNS)
+      .order("created_at", { ascending: false })
+      .order("id");
+
+    if (error) {
+      throw new Error(`Failed to load products for preview: ${error.message}`);
+    }
+
+    return (data as ProductRow[]).map(mapProductRow);
+  }
+
   const { data, error } = await createPublicClient()
     .from("products")
     .select(PRODUCT_COLUMNS)
@@ -153,6 +172,24 @@ async function findProduct(column: "slug" | "id", value: string | number): Promi
     return sampleProducts.find(
       (product) => product[column] === value && product.price > MINIMUM_SELLABLE_PRICE,
     );
+  }
+
+  // In preview, a card in the listing has to open its own page, so the same relaxation
+  // applies here. addToCart resolves products through this lookup too, but a previewed
+  // product still cannot be bought: the cart refuses anything with no stock, and place_order
+  // re-checks stock and price in the database, where the preview has no say.
+  if (await catalogPreviewEnabled()) {
+    const { data, error } = await (await createSessionClient())
+      .from("products")
+      .select(PRODUCT_COLUMNS)
+      .eq(column, value)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to load product ${column}=${value} for preview: ${error.message}`);
+    }
+
+    return data ? mapProductRow(data as ProductRow) : undefined;
   }
 
   // Same two conditions as getProducts, so an unpriced product 404s on its own page as well
