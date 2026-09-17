@@ -110,7 +110,7 @@ export function AvatarField({ userId, initials, avatarUrl }: AvatarFieldProps) {
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-3">
             {/* has-[:disabled] dims the label while its own file input is disabled. */}
-            <label className="cursor-pointer rounded-full bg-[#0f172a] px-5 py-2.5 text-sm font-semibold text-white focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-emerald-600 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60">
+            <label className="cursor-pointer rounded-full bg-[#0f172a] px-5 py-2.5 text-sm font-semibold text-white focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-600 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60">
               <span className="inline-flex items-center gap-2">
                 <UploadCloud size={15} aria-hidden />
                 {busy ? "Uploading…" : photo ? "Change photo" : "Upload photo"}

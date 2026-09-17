@@ -35,7 +35,7 @@ export function ThresholdEditor({ productId, name, threshold }: { productId: num
         value={value}
         onChange={(event) => setValue(event.target.value)}
         aria-label={`Low-stock alert level for ${name}`}
-        className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm tabular-nums outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+        className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm tabular-nums outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
       />
       {changed && (
         <button type="submit" disabled={pending} className={buttonClass("secondary", "sm")}>

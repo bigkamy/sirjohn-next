@@ -29,8 +29,8 @@ export default async function Page({ params }: PageProps<"/account/orders/[order
     <AccountLayout user={user}>
       <div className="space-y-6">
         <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <Link href="/account/orders" className="text-sm font-medium text-emerald-700">← Back to orders</Link>
-          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Order details</p>
+          <Link href="/account/orders" className="text-sm font-medium text-brand-700">← Back to orders</Link>
+          <p className="mt-4 text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Order details</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">#{order.orderNumber}</h1>
           <p className="mt-2 text-sm text-slate-500">Placed {formatDate(order.createdAt)}</p>
         </div>

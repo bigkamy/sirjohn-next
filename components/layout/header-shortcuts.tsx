@@ -25,7 +25,7 @@ export function HeaderShortcuts() {
           className={iconLinkClass}
         >
           <Heart size={18} />
-          {wishlist.length > 0 && <span className={`${badgeClass} bg-emerald-600`}>{badgeText(wishlist.length)}</span>}
+          {wishlist.length > 0 && <span className={`${badgeClass} bg-brand-600`}>{badgeText(wishlist.length)}</span>}
         </Link>
       </IconTooltip>
       <IconTooltip label="Cart">

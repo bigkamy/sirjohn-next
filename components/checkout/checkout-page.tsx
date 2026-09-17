@@ -78,7 +78,7 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Secure checkout</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Secure checkout</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">Checkout</h1>
       </div>
 
@@ -91,18 +91,18 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
               <fieldset className="mb-5 grid gap-3 md:grid-cols-2">
                 <legend className="sr-only">Saved addresses</legend>
                 {addresses.map((address) => (
-                  <label key={address.id} className="flex cursor-pointer gap-3 rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4 text-sm">
+                  <label key={address.id} className="flex cursor-pointer gap-3 rounded-2xl border border-slate-200 bg-[#faf8f5] p-4 text-sm">
                     <input
                       type="radio"
                       name="addressChoice"
                       checked={addressId === address.id}
                       onChange={() => setAddressId(address.id)}
-                      className="mt-1 h-4 w-4 text-emerald-600"
+                      className="mt-1 h-4 w-4 text-brand-600"
                     />
                     <span>
                       <span className="font-semibold text-slate-900">{address.label}</span>
                       {address.isDefault && (
-                        <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">Default</span>
+                        <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-brand-700">Default</span>
                       )}
                       <span className="mt-1 block text-slate-500">
                         {address.fullName}, {address.line1}, {address.city} {address.postalCode}
@@ -110,13 +110,13 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
                     </span>
                   </label>
                 ))}
-                <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4 text-sm">
+                <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-[#faf8f5] p-4 text-sm">
                   <input
                     type="radio"
                     name="addressChoice"
                     checked={addressId === NEW_ADDRESS}
                     onChange={() => setAddressId(NEW_ADDRESS)}
-                    className="h-4 w-4 text-emerald-600"
+                    className="h-4 w-4 text-brand-600"
                   />
                   <span className="font-semibold text-slate-900">Use a new address</span>
                 </label>
@@ -149,7 +149,7 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
                   type="checkbox"
                   name="saveAddress"
                   defaultChecked={addresses.length === 0}
-                  className="h-4 w-4 rounded border-slate-300 text-emerald-600"
+                  className="h-4 w-4 rounded border-slate-300 text-brand-600"
                 />
                 Save this address to my account
               </label>
@@ -160,7 +160,7 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
             <h2 className="mb-5 text-xl font-bold text-slate-900">Shipping Method</h2>
             <div className="space-y-3">
               {quote.shippingOptions.map((option) => (
-                <label key={option.code} className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4">
+                <label key={option.code} className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-[#faf8f5] p-4">
                   <div className="flex items-center gap-3">
                     <input
                       type="radio"
@@ -168,7 +168,7 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
                       value={option.code}
                       checked={shippingMethod === option.code}
                       onChange={() => setShippingMethod(option.code)}
-                      className="h-4 w-4 text-emerald-600"
+                      className="h-4 w-4 text-brand-600"
                     />
                     <div>
                       <div className="font-semibold text-slate-900">{option.name}</div>
@@ -185,14 +185,14 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
             <h2 className="mb-5 text-xl font-bold text-slate-900">Payment</h2>
             <div className="space-y-3">
               {PAYMENT_METHODS.map((method) => (
-                <label key={method} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4">
+                <label key={method} className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 bg-[#faf8f5] p-4">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value={method}
                     required
                     defaultChecked={state?.values?.paymentMethod === method}
-                    className="h-4 w-4 text-emerald-600"
+                    className="h-4 w-4 text-brand-600"
                   />
                   <span className="font-medium text-slate-700">{paymentMethodLabels[method]}</span>
                 </label>
@@ -206,7 +206,7 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
           <h2 className="text-2xl font-bold text-slate-900">Order Review</h2>
           <div className="mt-6 space-y-4">
             {quote.lines.map((line) => (
-              <div key={line.key} className="flex items-center justify-between gap-4 rounded-2xl bg-[#f7f9f7] p-3">
+              <div key={line.key} className="flex items-center justify-between gap-4 rounded-2xl bg-[#faf8f5] p-3">
                 <div>
                   <div className="font-semibold text-slate-900">{line.name}</div>
                   <div className="text-sm text-slate-500">Qty: {line.quantity}</div>
@@ -243,14 +243,14 @@ export function CheckoutPage({ quote, prefill, addresses }: CheckoutPageProps) {
           <button
             type="submit"
             disabled={pending}
-            className="mt-6 block w-full rounded-full bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-slate-900 disabled:opacity-60"
+            className="mt-6 block w-full rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-slate-900 disabled:opacity-60"
           >
             {pending ? "Placing order…" : "Place Order"}
           </button>
           <p className="mt-3 text-center text-xs leading-5 text-slate-500">
             By placing your order you agree to our{" "}
-            <Link href="/policies/terms" className="font-semibold text-emerald-700">Terms &amp; Conditions</Link> and{" "}
-            <Link href="/policies/privacy" className="font-semibold text-emerald-700">Privacy Policy</Link>.
+            <Link href="/policies/terms" className="font-semibold text-brand-700">Terms &amp; Conditions</Link> and{" "}
+            <Link href="/policies/privacy" className="font-semibold text-brand-700">Privacy Policy</Link>.
           </p>
         </aside>
       </form>

@@ -70,7 +70,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/coupons">
               </THead>
               <TBody>
                 {coupons.map((coupon) => (
-                  <tr key={coupon.id} className={editing?.id === coupon.id ? "bg-emerald-50/50" : undefined}>
+                  <tr key={coupon.id} className={editing?.id === coupon.id ? "bg-brand-50/50" : undefined}>
                     <Td>
                       <p className="font-mono font-semibold text-slate-900">{coupon.code}</p>
                       {coupon.description && <p className="max-w-[220px] truncate text-xs text-slate-500">{coupon.description}</p>}

@@ -87,11 +87,11 @@ export function MediaUploader({ onUploaded, refreshAfter = false }: { onUploaded
         setDragging(false);
         void upload(event.dataTransfer.files);
       }}
-      className={`rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${dragging ? "border-emerald-400 bg-emerald-50" : "border-slate-200 bg-slate-50/70"}`}
+      className={`rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${dragging ? "border-brand-400 bg-brand-50" : "border-slate-200 bg-slate-50/70"}`}
     >
       <UploadCloud size={28} className="mx-auto text-slate-400" aria-hidden />
       <p className="mt-2 text-sm text-slate-600">Drag images here, or</p>
-      <label className={`${buttonClass("secondary", "sm")} mt-2 cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-emerald-600`}>
+      <label className={`${buttonClass("secondary", "sm")} mt-2 cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand-600`}>
         {busy ? "Uploading…" : "Choose images"}
         <input
           ref={input}
@@ -105,7 +105,7 @@ export function MediaUploader({ onUploaded, refreshAfter = false }: { onUploaded
       </label>
       <p className="mt-2 text-xs text-slate-500">JPG, PNG, WebP, AVIF, or GIF, up to 5 MB each.</p>
       {busy && (
-        <p role="status" className="mt-2 text-xs font-medium text-emerald-700">
+        <p role="status" className="mt-2 text-xs font-medium text-brand-700">
           Uploading…
         </p>
       )}

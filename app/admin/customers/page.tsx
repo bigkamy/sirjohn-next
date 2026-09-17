@@ -56,7 +56,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/customers
                 <tr key={customer.id} className="hover:bg-slate-50/70">
                   <Td>
                     <Link href={`/admin/customers/${customer.id}`} className="block min-w-[200px]">
-                      <span className="block font-medium text-slate-900 hover:text-emerald-700">{customer.name}</span>
+                      <span className="block font-medium text-slate-900 hover:text-brand-700">{customer.name}</span>
                       <span className="block truncate text-xs text-slate-500">{customer.email}</span>
                     </Link>
                   </Td>

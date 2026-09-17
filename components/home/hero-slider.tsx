@@ -69,7 +69,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <section
-      className="relative overflow-hidden bg-[#f6f9f4]"
+      className="relative overflow-hidden bg-[#fbf8f3]"
       aria-roledescription={many ? "carousel" : undefined}
       aria-label={many ? `${siteConfig.name} highlights` : undefined}
       onKeyDown={onKeyDown}
@@ -81,7 +81,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(15,23,42,0.06),transparent_45%)]" />
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 lg:px-8">
         <div
-          className="overflow-hidden rounded-[32px] border border-[#e4ebdf] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]"
+          className="overflow-hidden rounded-[32px] border border-[#eee7d9] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]"
           style={{ touchAction: "pan-y" }}
           onPointerDown={(event) => {
             startX.current = event.clientX;
@@ -126,14 +126,14 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                           href={slide.buttonUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-700"
                         >
                           {slide.buttonText} <ArrowRight size={16} aria-hidden />
                         </a>
                       ) : (
                         <Link
                           href={slide.buttonUrl}
-                          className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                          className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-700"
                         >
                           {slide.buttonText} <ArrowRight size={16} aria-hidden />
                         </Link>

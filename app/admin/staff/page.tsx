@@ -41,7 +41,7 @@ export default async function Page() {
                   <tr key={member.id}>
                     <Td>
                       <Link href={`/admin/staff/${member.id}`} className="block min-w-[180px]">
-                        <span className="block font-medium text-slate-900 hover:text-emerald-700">{member.name}</span>
+                        <span className="block font-medium text-slate-900 hover:text-brand-700">{member.name}</span>
                         <span className="block truncate text-xs text-slate-500">{member.email}</span>
                       </Link>
                     </Td>

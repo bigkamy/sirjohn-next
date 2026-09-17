@@ -11,7 +11,7 @@ export function ActivityFeed({ entries, empty = "No activity yet." }: { entries:
     <ol className="divide-y divide-slate-100">
       {entries.map((entry) => (
         <li key={entry.id} className="flex gap-3 px-5 py-3">
-          <span aria-hidden className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${entry.level === "error" ? "bg-red-500" : "bg-emerald-500"}`} />
+          <span aria-hidden className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${entry.level === "error" ? "bg-red-500" : "bg-brand-500"}`} />
           <div className="min-w-0 flex-1">
             <p className="text-sm text-slate-800">
               {entry.level === "error" && <span className="font-semibold text-red-700">Error: </span>}

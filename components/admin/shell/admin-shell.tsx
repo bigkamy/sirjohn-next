@@ -81,7 +81,7 @@ export function AdminShell({ nav, user, defaultCollapsed, children }: AdminShell
       <a href="#admin-main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold">
         Skip to content
       </a>
-      <div className="min-h-screen bg-[#f4f6f5] text-slate-900">
+      <div className="min-h-screen bg-[#f9f6f2] text-slate-900">
         <aside
           aria-label="Admin navigation"
           className={`fixed inset-y-0 left-0 z-40 hidden flex-col bg-[#0b1220] text-slate-300 transition-[width] duration-200 lg:flex ${collapsed ? "w-[76px]" : "w-64"}`}
@@ -165,13 +165,13 @@ function SidebarContent({
     <>
       <div className={`flex h-16 shrink-0 items-center border-b border-white/10 ${collapsed ? "justify-center px-2" : "px-5"}`}>
         <Link href="/admin" onClick={onNavigate} className="flex items-center gap-3" aria-label={`${siteConfig.name} admin`}>
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400 text-sm font-black text-[#0b1220]">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-400 text-sm font-black text-[#0b1220]">
             {siteConfig.brand.monogram}
           </span>
           {!collapsed && (
             <span className="leading-tight">
               <span className="block text-sm font-black tracking-[0.2em] text-white">{siteConfig.brand.wordmark}</span>
-              <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-300">Admin</span>
+              <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-brand-300">Admin</span>
             </span>
           )}
         </Link>
@@ -197,10 +197,10 @@ function SidebarContent({
                       aria-current={active ? "page" : undefined}
                       title={collapsed ? item.label : undefined}
                       className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${collapsed ? "justify-center" : ""} ${
-                        active ? "bg-emerald-400/15 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
+                        active ? "bg-brand-400/15 text-white" : "text-slate-300 hover:bg-white/5 hover:text-white"
                       }`}
                     >
-                      <Icon size={18} aria-hidden className={active ? "text-emerald-300" : "text-slate-400 group-hover:text-slate-200"} />
+                      <Icon size={18} aria-hidden className={active ? "text-brand-300" : "text-slate-400 group-hover:text-slate-200"} />
                       {collapsed ? <span className="sr-only">{item.label}</span> : item.label}
                     </Link>
                   </li>
@@ -244,7 +244,7 @@ function UserMenu({ user }: { user: ShellUser }) {
         <div className="border-b border-slate-100 px-3 pb-3 pt-2">
           <p className="truncate text-sm font-semibold text-slate-900">{user.name}</p>
           <p className="truncate text-xs text-slate-500">{user.email}</p>
-          <p className="mt-1 text-xs font-medium text-emerald-700">{user.roleLabel}</p>
+          <p className="mt-1 text-xs font-medium text-brand-700">{user.roleLabel}</p>
         </div>
         <Link href="/account" className="mt-1 flex rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">My account</Link>
         <Link href="/" className="flex rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100">View store</Link>

@@ -19,8 +19,8 @@ export function BrandLogo({ tone = "light" }: { tone?: "light" | "dark" }) {
       <span
         className={
           light
-            ? "flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0f172a] text-emerald-400 shadow-md"
-            : "flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400"
+            ? "flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0f172a] text-brand-400 shadow-md"
+            : "flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-500/20 text-brand-400"
         }
       >
         {light ? <Sparkles size={18} /> : brand.monogram.charAt(0)}

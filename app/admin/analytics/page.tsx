@@ -129,7 +129,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/analytics
                   <tr key={product.productId}>
                     <Td>
                       {canEdit ? (
-                        <Link href={`/admin/products/${product.productId}/edit`} className="font-medium text-slate-900 hover:text-emerald-700">
+                        <Link href={`/admin/products/${product.productId}/edit`} className="font-medium text-slate-900 hover:text-brand-700">
                           {product.name}
                         </Link>
                       ) : (

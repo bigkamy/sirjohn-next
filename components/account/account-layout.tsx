@@ -14,7 +14,7 @@ const links = [
 ];
 
 const navItemClass =
-  "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-[#f7f9f7] hover:text-emerald-700";
+  "flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-slate-600 transition hover:bg-[#faf8f5] hover:text-brand-700";
 
 export function AccountLayout({ user, children }: { user: SessionUser; children: React.ReactNode }) {
   const name = displayName(user);
@@ -26,7 +26,7 @@ export function AccountLayout({ user, children }: { user: SessionUser; children:
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
         <aside className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-5 flex items-center gap-3 rounded-2xl bg-[#f7f9f7] p-3">
+          <div className="mb-5 flex items-center gap-3 rounded-2xl bg-[#faf8f5] p-3">
             {user.avatarUrl ? (
               <img
                 src={user.avatarUrl}

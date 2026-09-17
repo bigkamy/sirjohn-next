@@ -38,7 +38,7 @@ export default async function Page({ searchParams }: PageProps<"/login">) {
       <LoginForm next={nextPath} />
 
       <p className="mt-6 text-center text-sm text-slate-600">
-        Don’t have an account? <Link href={registerHref} className="font-semibold text-emerald-700">Register</Link>
+        Don’t have an account? <Link href={registerHref} className="font-semibold text-brand-700">Register</Link>
       </p>
     </AuthShell>
   );

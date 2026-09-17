@@ -8,7 +8,7 @@ export function NewsletterForm() {
 
   if (state?.message) {
     return (
-      <p role="status" className="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-6 py-3 text-sm font-semibold text-emerald-200">
+      <p role="status" className="rounded-full border border-brand-400/40 bg-brand-500/10 px-6 py-3 text-sm font-semibold text-brand-200">
         {state.message}
       </p>
     );
@@ -29,7 +29,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-emerald-400 disabled:opacity-60"
+          className="rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-brand-400 disabled:opacity-60"
         >
           {pending ? "Subscribing…" : "Subscribe"}
         </button>

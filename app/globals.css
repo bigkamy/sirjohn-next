@@ -1,8 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f7f4;
+  --background: #faf8f4;
   --foreground: #0f172a;
+}
+
+/*
+ * The brand ramp is built around the gold in the Sir John logo, #d89634, which sits at 500.
+ * Shades either side of it are there so the same colour works as text, as a fill and on the
+ * dark surfaces, which the logo gold alone cannot do: on white it only reaches 2.5:1.
+ *
+ * Contrast measured against white, and against the near-black #0f172a used for dark panels:
+ *   brand-700 on white .......... 6.2:1   (body text, links)
+ *   brand-600 under white text .. 4.8:1   (filled buttons and badges)
+ *   brand-700 on brand-50 ....... 5.8:1   (tinted callouts)
+ *   brand-500 on #0f172a ........ 7.1:1   (the logo gold, as the logo itself uses it)
+ *   brand-300 on #0f172a ....... 10.4:1   (footer links)
+ * Keep those pairings when adding UI, or pick a shade and check it again.
+ */
+@theme {
+  --color-brand-50: #fdf8f0;
+  --color-brand-100: #faedd7;
+  --color-brand-200: #f3d9ab;
+  --color-brand-300: #eabf76;
+  --color-brand-400: #e1a851;
+  --color-brand-500: #d89634;
+  --color-brand-600: #9e661c;
+  --color-brand-700: #875719;
+  --color-brand-800: #6b4516;
+  --color-brand-900: #553714;
 }
 
 @theme inline {

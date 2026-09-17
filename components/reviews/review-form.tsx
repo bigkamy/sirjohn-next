@@ -38,14 +38,14 @@ export function ReviewForm({ productId, productName, orderNumber, existing }: { 
 
   if (existing && !editing) {
     return (
-      <div className="rounded-2xl bg-[#f7f9f7] p-4">
+      <div className="rounded-2xl bg-[#faf8f5] p-4">
         <div className="flex flex-wrap items-center gap-3">
           <Stars rating={existing.rating} />
           <span className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{STATUS_TEXT[existing.status]}</span>
         </div>
         {existing.title && <p className="mt-2 font-semibold text-slate-900">{existing.title}</p>}
         <p className="mt-1 whitespace-pre-line text-sm text-slate-600">{existing.body}</p>
-        <button type="button" onClick={() => setEditing(true)} className="mt-3 text-sm font-semibold text-emerald-700">
+        <button type="button" onClick={() => setEditing(true)} className="mt-3 text-sm font-semibold text-brand-700">
           Edit review
         </button>
       </div>
@@ -72,7 +72,7 @@ export function ReviewForm({ productId, productName, orderNumber, existing }: { 
               <Star
                 size={26}
                 aria-hidden
-                className={`rounded peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-500 ${value <= rating ? "fill-amber-400 text-amber-500" : "text-slate-300"}`}
+                className={`rounded peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500 ${value <= rating ? "fill-amber-400 text-amber-500" : "text-slate-300"}`}
               />
               <span className="sr-only">
                 {value} {value === 1 ? "star" : "stars"}

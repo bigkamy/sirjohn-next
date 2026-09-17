@@ -47,14 +47,14 @@ export default async function Page({ params }: PageProps<"/admin/customers/[id]"
             title="Profile"
             action={
               isStaffRole(customer.role) && staff.permissions.has("staff.manage") ? (
-                <Link href={`/admin/staff/${customer.id}`} className="text-sm font-medium text-emerald-700">Team member</Link>
+                <Link href={`/admin/staff/${customer.id}`} className="text-sm font-medium text-brand-700">Team member</Link>
               ) : undefined
             }
           />
           <DetailList
             items={[
               { label: "Name", value: customer.name },
-              { label: "Email", value: <a href={`mailto:${customer.email}`} className="text-emerald-700">{customer.email}</a> },
+              { label: "Email", value: <a href={`mailto:${customer.email}`} className="text-brand-700">{customer.email}</a> },
               { label: "Phone", value: customer.phone ?? "—" },
               { label: "Account created", value: formatDateTime(customer.createdAt) },
               { label: "Last signed in", value: customer.lastSignInAt ? formatDateTime(customer.lastSignInAt) : "Never" },

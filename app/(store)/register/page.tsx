@@ -32,12 +32,12 @@ export default async function Page({ searchParams }: PageProps<"/register">) {
 
       <p className="mt-4 text-center text-xs leading-5 text-slate-500">
         By creating an account you agree to our{" "}
-        <Link href="/policies/terms" className="font-semibold text-emerald-700">Terms &amp; Conditions</Link> and{" "}
-        <Link href="/policies/privacy" className="font-semibold text-emerald-700">Privacy Policy</Link>.
+        <Link href="/policies/terms" className="font-semibold text-brand-700">Terms &amp; Conditions</Link> and{" "}
+        <Link href="/policies/privacy" className="font-semibold text-brand-700">Privacy Policy</Link>.
       </p>
 
       <p className="mt-6 text-center text-sm text-slate-600">
-        Already have an account? <Link href={loginHref} className="font-semibold text-emerald-700">Login</Link>
+        Already have an account? <Link href={loginHref} className="font-semibold text-brand-700">Login</Link>
       </p>
     </AuthShell>
   );

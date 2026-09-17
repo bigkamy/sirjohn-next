@@ -22,7 +22,7 @@ export function FormField({ label, name, id, errors, className, ...inputProps }:
         name={name}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="w-full rounded-2xl border border-slate-200 bg-[#f7f9f7] px-4 py-3 text-sm outline-none focus:border-emerald-500 aria-invalid:border-red-300"
+        className="w-full rounded-2xl border border-slate-200 bg-[#faf8f5] px-4 py-3 text-sm outline-none focus:border-brand-500 aria-invalid:border-red-300"
         {...inputProps}
       />
       {error && (
@@ -55,7 +55,7 @@ export function TextAreaField({ label, name, id, errors, className, ...textareaP
         name={name}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="w-full rounded-2xl border border-slate-200 bg-[#f7f9f7] px-4 py-3 text-sm outline-none focus:border-emerald-500 aria-invalid:border-red-300"
+        className="w-full rounded-2xl border border-slate-200 bg-[#faf8f5] px-4 py-3 text-sm outline-none focus:border-brand-500 aria-invalid:border-red-300"
         {...textareaProps}
       />
       {error && (
@@ -78,7 +78,7 @@ export function FormAlert({ error, message }: { error?: string; message?: string
 
   if (message) {
     return (
-      <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <p role="status" className="rounded-2xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm text-brand-800">
         {message}
       </p>
     );

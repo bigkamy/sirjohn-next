@@ -70,7 +70,7 @@ export function AddressForm({ address }: { address?: Address }) {
         <p className="mt-5 text-sm text-slate-500">This is your default delivery address.</p>
       ) : (
         <label className="mt-5 flex items-center gap-2 text-sm text-slate-600">
-          <input type="checkbox" name="isDefault" className="h-4 w-4 rounded border-slate-300 text-emerald-600" />
+          <input type="checkbox" name="isDefault" className="h-4 w-4 rounded border-slate-300 text-brand-600" />
           Make this my default address
         </label>
       )}

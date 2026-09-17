@@ -82,7 +82,7 @@ export function LaunchChecklistCard({ items }: { items: ChecklistItem[] }) {
               <p className="text-sm font-semibold text-slate-900">{item.title}</p>
               <p className="mt-0.5 text-sm text-slate-600">{item.detail}</p>
               {item.link && (
-                <Link href={item.link.href} className="mt-1 inline-block text-sm font-medium text-emerald-700 hover:text-emerald-900">
+                <Link href={item.link.href} className="mt-1 inline-block text-sm font-medium text-brand-700 hover:text-brand-900">
                   {item.link.label}
                 </Link>
               )}

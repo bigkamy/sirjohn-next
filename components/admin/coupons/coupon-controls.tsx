@@ -100,7 +100,7 @@ export function CouponActiveSwitch({ id, code, isActive }: { id: number; code: s
           toast({ tone: result.ok ? "success" : "error", message: result.message });
         })
       }
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition disabled:opacity-60 ${on ? "bg-emerald-600" : "bg-slate-300"}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition disabled:opacity-60 ${on ? "bg-brand-600" : "bg-slate-300"}`}
     >
       <span aria-hidden className={`inline-block h-5 w-5 rounded-full bg-white shadow transition ${on ? "translate-x-5" : "translate-x-0.5"}`} />
     </button>

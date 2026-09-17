@@ -32,7 +32,7 @@ export function LoginForm({ next }: { next: string }) {
       />
 
       <div className="flex justify-end text-sm">
-        <Link href="/forgot-password" className="font-medium text-emerald-700">
+        <Link href="/forgot-password" className="font-medium text-brand-700">
           Forgot password?
         </Link>
       </div>

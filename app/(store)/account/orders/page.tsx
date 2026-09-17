@@ -13,7 +13,7 @@ export default async function Page() {
     <AccountLayout user={user}>
       <div className="space-y-6">
         <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Order history</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Order history</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">My Orders</h1>
         </div>
 

@@ -103,12 +103,12 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
     <>
       <div className="mb-8 flex flex-col gap-3 border-b border-slate-200 pb-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Home / Shop</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Home / Shop</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">Shop Golf Equipment</h1>
           {filters.q && (
             <p className="mt-2 text-sm text-slate-600">
               Results for “{filters.q}”{" "}
-              <button type="button" onClick={() => update({ q: "" })} className="font-semibold text-emerald-700">
+              <button type="button" onClick={() => update({ q: "" })} className="font-semibold text-brand-700">
                 Clear search
               </button>
             </p>
@@ -145,7 +145,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                     type="checkbox"
                     checked={filters.categories.includes(category)}
                     onChange={() => update({ categories: toggle(filters.categories, category) })}
-                    className="h-4 w-4 rounded border-slate-300 text-emerald-600"
+                    className="h-4 w-4 rounded border-slate-300 text-brand-600"
                   />
                   <span>{category}</span>
                 </label>
@@ -167,7 +167,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                   const value = Number(event.target.value);
                   update({ maxPrice: value >= priceCeiling ? null : value });
                 }}
-                className="w-full accent-emerald-600"
+                className="w-full accent-brand-600"
               />
               <div className="flex items-center justify-between text-sm text-slate-500">
                 <span>₹0</span>
@@ -185,7 +185,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                     type="checkbox"
                     checked={filters.brands.includes(brand)}
                     onChange={() => update({ brands: toggle(filters.brands, brand) })}
-                    className="h-4 w-4 rounded border-slate-300 text-emerald-600"
+                    className="h-4 w-4 rounded border-slate-300 text-brand-600"
                   />
                   <span>{brand}</span>
                 </label>
@@ -203,8 +203,8 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                   type="button"
                   aria-pressed={filters.minRating === min}
                   onClick={() => update({ minRating: filters.minRating === min ? 0 : min })}
-                  className={`block w-full rounded-xl border px-3 py-2 text-left hover:border-emerald-300 hover:text-emerald-700 ${
-                    filters.minRating === min ? "border-emerald-500 text-emerald-700" : "border-slate-200"
+                  className={`block w-full rounded-xl border px-3 py-2 text-left hover:border-brand-300 hover:text-brand-700 ${
+                    filters.minRating === min ? "border-brand-500 text-brand-700" : "border-slate-200"
                   }`}
                 >
                   {stars} & Up
@@ -215,7 +215,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
           )}
 
           {filtering && (
-            <button type="button" onClick={() => reset({ ...NO_FILTERS, sort: filters.sort })} className="text-sm font-semibold text-emerald-700">
+            <button type="button" onClick={() => reset({ ...NO_FILTERS, sort: filters.sort })} className="text-sm font-semibold text-brand-700">
               Clear all filters
             </button>
           )}
@@ -229,7 +229,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
               id="shop-sort"
               value={filters.sort}
               onChange={(event) => update({ sort: event.target.value as Sort })}
-              className="rounded-full border border-slate-200 bg-[#f7f9f7] px-4 py-2 text-sm text-slate-700 outline-none"
+              className="rounded-full border border-slate-200 bg-[#faf8f5] px-4 py-2 text-sm text-slate-700 outline-none"
             >
               <option value="newest">Newest</option>
               <option value="price-asc">Price: Low to High</option>
@@ -242,7 +242,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
             <div className="rounded-[24px] border border-slate-200 bg-white p-10 text-center text-slate-600 shadow-sm">
               <p>{products.length === 0 ? "New products are on their way." : "No products match your filters."}</p>
               {filtering && (
-                <button type="button" onClick={() => reset(NO_FILTERS)} className="mt-4 font-semibold text-emerald-700">
+                <button type="button" onClick={() => reset(NO_FILTERS)} className="mt-4 font-semibold text-brand-700">
                   Clear filters
                 </button>
               )}
@@ -262,7 +262,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage === 1}
                     aria-label="Previous page"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-brand-300 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
                   >
                     <ChevronLeft size={16} />
                   </button>
@@ -277,7 +277,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                       className={`inline-flex h-10 min-w-10 items-center justify-center rounded-full border px-3 text-sm font-semibold transition ${
                         number === currentPage
                           ? "border-[#0f172a] bg-[#0f172a] text-white"
-                          : "border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:text-emerald-700"
+                          : "border-slate-200 bg-white text-slate-700 hover:border-brand-300 hover:text-brand-700"
                       }`}
                     >
                       {number}
@@ -289,7 +289,7 @@ export function ShopCatalog({ products, categories, initial }: ShopCatalogProps)
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
                     aria-label="Next page"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition hover:border-brand-300 hover:text-brand-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-700"
                   >
                     <ChevronRight size={16} />
                   </button>

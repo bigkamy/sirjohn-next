@@ -17,7 +17,7 @@ export function AboutPage() {
             className="bg-cover bg-center p-8 text-white sm:p-10"
             style={{ backgroundImage: `linear-gradient(rgba(15,23,42,0.54),rgba(15,23,42,0.48)),url('${siteImages.about}')` }}
           >
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">About our brand</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-300">About our brand</p>
             <h1 className="mt-4 text-4xl font-black tracking-tight sm:text-5xl">For the love of golf</h1>
           </div>
           <div className="p-8 sm:p-10">
@@ -44,7 +44,7 @@ export function AboutPage() {
 
       <section className="mt-12">
         <div className="mb-6 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Our values</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Our values</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Built on trust and performance</h2>
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

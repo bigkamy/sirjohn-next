@@ -32,7 +32,7 @@ export function MobileMenu({ items, categories }: MobileMenuProps) {
         <div id="mobile-menu" className="absolute inset-x-0 top-full z-40 border-b border-slate-200 bg-white px-4 py-5 shadow-lg lg:hidden">
           {/* No onSubmit here: closing the panel unmounts this form mid-submit and the browser
               then cancels the navigation. The next page renders with the menu closed anyway. */}
-          <form action="/shop" role="search" className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2">
+          <form action="/shop" role="search" className="flex items-center gap-2 rounded-full border border-slate-200 bg-[#faf8f5] px-3 py-2">
             <select name="category" aria-label="Category" className="rounded-full border border-slate-200 bg-white px-2 py-2 text-sm text-slate-700 outline-none">
               <option value="">All</option>
               {categories.map((category) => (
@@ -59,9 +59,9 @@ export function MobileMenu({ items, categories }: MobileMenuProps) {
                   key={item.label}
                   href={item.href}
                   onClick={close}
-                  className="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-[#f7f9f7] hover:text-emerald-700"
+                  className="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-[#faf8f5] hover:text-brand-700"
                 >
-                  <Icon size={16} aria-hidden className="shrink-0 text-emerald-700/70" />
+                  <Icon size={16} aria-hidden className="shrink-0 text-brand-700/70" />
                   {item.label}
                 </Link>
               );

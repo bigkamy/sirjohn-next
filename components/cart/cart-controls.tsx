@@ -27,7 +27,7 @@ export function QuantityStepper({ lineKey, quantity, max }: { lineKey: string; q
 
   return (
     <div>
-      <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-[#f7f9f7] px-2 py-2" aria-busy={pending}>
+      <div className="flex items-center gap-3 rounded-full border border-slate-200 bg-[#faf8f5] px-2 py-2" aria-busy={pending}>
         <button
           type="button"
           aria-label="Decrease quantity"

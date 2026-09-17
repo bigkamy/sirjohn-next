@@ -7,7 +7,7 @@ import { formatDateTime } from "@/lib/format";
 export const metadata = { title: "System health" };
 
 const STATUS = {
-  ok: { label: "Operational", icon: CircleCheck, className: "text-emerald-600" },
+  ok: { label: "Operational", icon: CircleCheck, className: "text-brand-600" },
   warning: { label: "Needs attention", icon: TriangleAlert, className: "text-amber-600" },
   error: { label: "Unavailable", icon: CircleX, className: "text-red-600" },
 } satisfies Record<CheckStatus, unknown>;

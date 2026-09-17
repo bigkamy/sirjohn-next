@@ -37,7 +37,7 @@ export function StockAdjuster({ productId, name, stock }: { productId: number; n
         onChange={(event) => setUnits(event.target.value)}
         aria-label={`Units of ${name} to add or remove`}
         placeholder="Qty"
-        className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+        className="w-16 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
       />
       <button type="button" disabled={pending} onClick={() => apply(1)} aria-label={`Add units to ${name}`} className={buttonClass("secondary", "sm")}>
         <Plus size={13} aria-hidden /> Add

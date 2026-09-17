@@ -14,9 +14,9 @@ type TrendChartProps = {
   emptyText?: string;
 };
 
-// One series, so one colour: brand emerald, checked against the white chart surface with the
-// dataviz palette validator (lightness band, chroma, and ≥ 3:1 contrast all pass).
-const SERIES = "#047857";
+// One series, so one colour: brand-700, the darkest readable step of the logo gold. Measured
+// at 6.2:1 against the white chart surface, so it clears the 3:1 a chart mark needs.
+const SERIES = "#875719";
 const PLOT_HEIGHT = 200;
 
 function niceMax(max: number, integers: boolean) {
@@ -99,7 +99,7 @@ export function TrendChart({ title, points, format, variant = "column", emptyTex
             onPointerMove={onPointerMove}
             onPointerLeave={() => setActive(null)}
             onBlur={() => setActive(null)}
-            className="relative rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
+            className="relative rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
             style={{ height: PLOT_HEIGHT }}
           >
             {ticks.map((tick) => (

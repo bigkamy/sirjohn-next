@@ -18,7 +18,7 @@ export default async function NotFound() {
       <SiteHeader categories={categories} />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-16 sm:px-6 lg:px-8">
         <div className="rounded-[32px] border border-slate-200 bg-white p-8 text-center shadow-sm sm:p-12">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Error 404</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Error 404</p>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900">Page not found</h1>
           <p className="mt-4 text-lg text-slate-600">The page you’re looking for doesn’t exist or is no longer available.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">

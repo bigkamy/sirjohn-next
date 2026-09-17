@@ -57,7 +57,7 @@ export default async function Page() {
               const remaining = countPlaceholders(policy);
               return (
                 <li key={slug} className="flex flex-wrap items-center gap-3 px-5 py-3">
-                  <Link href={`/policies/${slug}`} target="_blank" prefetch={false} className="flex-1 text-sm font-medium text-slate-900 hover:text-emerald-700">
+                  <Link href={`/policies/${slug}`} target="_blank" prefetch={false} className="flex-1 text-sm font-medium text-slate-900 hover:text-brand-700">
                     {policy.title}
                   </Link>
                   {remaining > 0 ? <Badge tone="warning">Draft · {remaining} to complete</Badge> : <Badge tone="success">Complete</Badge>}

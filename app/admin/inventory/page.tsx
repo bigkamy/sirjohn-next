@@ -66,7 +66,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/inventory
                       <img src={item.image} alt="" className="h-10 w-10 shrink-0 rounded-lg border border-slate-100 object-cover" />
                       <div className="min-w-0">
                         {canEditProducts ? (
-                          <Link href={`/admin/products/${item.id}/edit`} className="block truncate font-medium text-slate-900 hover:text-emerald-700">
+                          <Link href={`/admin/products/${item.id}/edit`} className="block truncate font-medium text-slate-900 hover:text-brand-700">
                             {item.name}
                           </Link>
                         ) : (

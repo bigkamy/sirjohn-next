@@ -29,7 +29,7 @@ function ShippingRatesTable({ rates }: { rates: ShippingRate[] }) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200">
       <table className="min-w-full text-left text-sm">
-        <thead className="bg-[#f7f9f7] text-slate-700">
+        <thead className="bg-[#faf8f5] text-slate-700">
           <tr>
             <th className="px-4 py-3 font-semibold">Delivery option</th>
             <th className="px-4 py-3 font-semibold">Charge</th>
@@ -57,7 +57,7 @@ export function PolicyPage({ policy, shippingRates = [] }: { policy: Policy; shi
   return (
     <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Policies</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Policies</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">{policy.title}</h1>
         <p className="mt-3 text-base text-slate-600">{policy.summary}</p>
         <p className="mt-4 text-sm text-slate-500">
@@ -99,7 +99,7 @@ export function PolicyPage({ policy, shippingRates = [] }: { policy: Policy; shi
 
       <nav aria-label="Policies" className="mt-6 flex flex-wrap gap-3 text-sm">
         {POLICY_SLUGS.filter((slug) => slug !== policy.slug).map((slug) => (
-          <Link key={slug} href={`/policies/${slug}`} className="rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 hover:border-emerald-300 hover:text-emerald-700">
+          <Link key={slug} href={`/policies/${slug}`} className="rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700">
             {policies[slug].title}
           </Link>
         ))}

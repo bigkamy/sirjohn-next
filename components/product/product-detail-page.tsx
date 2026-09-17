@@ -32,9 +32,9 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8 text-sm text-slate-500">
-        <Link href="/" className="hover:text-emerald-700">Home</Link>
+        <Link href="/" className="hover:text-brand-700">Home</Link>
         <span className="mx-2">/</span>
-        <Link href="/shop" className="hover:text-emerald-700">Shop</Link>
+        <Link href="/shop" className="hover:text-brand-700">Shop</Link>
         <span className="mx-2">/</span>
         <span className="text-slate-700">{product.name}</span>
       </div>
@@ -51,7 +51,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
                 type="button"
                 aria-label={`Show image ${index + 1}`}
                 onClick={() => setSelectedImage(image)}
-                className={`overflow-hidden rounded-2xl border ${selectedImage === image ? "border-emerald-500" : "border-slate-200"}`}
+                className={`overflow-hidden rounded-2xl border ${selectedImage === image ? "border-brand-500" : "border-slate-200"}`}
               >
                 <img src={image} alt="" className="h-28 w-full object-cover" />
               </button>
@@ -61,7 +61,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
 
         <div className="space-y-6">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">{product.brand}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">{product.brand}</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">{product.name}</h1>
           </div>
 
@@ -87,7 +87,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
             {savePercent > 0 && (
               <>
                 <span className="text-xl text-slate-400 line-through">{formatPrice(product.originalPrice)}</span>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-emerald-700">
+                <span className="rounded-full bg-brand-100 px-2.5 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-700">
                   Save {savePercent}%
                 </span>
               </>
@@ -109,7 +109,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
                         type="button"
                         aria-pressed={selected}
                         onClick={() => setSelectedOptions((current) => ({ ...current, [group.name]: value }))}
-                        className={`rounded-full border px-4 py-2 text-sm font-medium ${selected ? "border-emerald-500 bg-emerald-50 text-emerald-700" : "border-slate-200 text-slate-700"}`}
+                        className={`rounded-full border px-4 py-2 text-sm font-medium ${selected ? "border-brand-500 bg-brand-50 text-brand-700" : "border-slate-200 text-slate-700"}`}
                       >
                         {value}
                       </button>
@@ -119,7 +119,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
               </div>
             ))}
 
-            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-[#f7f9f7] p-3">
+            <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-[#faf8f5] p-3">
               <span className="text-sm font-medium text-slate-600">Quantity</span>
               <div className="flex items-center gap-3">
                 <button type="button" aria-label="Decrease quantity" onClick={() => setQuantity((value) => Math.max(1, value - 1))} className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm">
@@ -140,7 +140,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
               options={selectedOptions}
               disabled={outOfStock}
               wrapperClassName="flex-1"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
             >
               <ShoppingBag size={17} /> {outOfStock ? "Out of Stock" : "Add to Cart"}
             </AddToCartButton>
@@ -162,9 +162,9 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
             />
           </div>
 
-          <div className="grid gap-3 rounded-[24px] border border-slate-200 bg-[#f7f9f7] p-4 text-sm text-slate-600 md:grid-cols-2">
-            <div className="flex items-center gap-2"><Truck size={16} className="text-emerald-700" /> {freeShippingLabel(freeShippingOver)}</div>
-            <div className="flex items-center gap-2"><ShieldCheck size={16} className="text-emerald-700" /> Secure checkout</div>
+          <div className="grid gap-3 rounded-[24px] border border-slate-200 bg-[#faf8f5] p-4 text-sm text-slate-600 md:grid-cols-2">
+            <div className="flex items-center gap-2"><Truck size={16} className="text-brand-700" /> {freeShippingLabel(freeShippingOver)}</div>
+            <div className="flex items-center gap-2"><ShieldCheck size={16} className="text-brand-700" /> Secure checkout</div>
           </div>
         </div>
       </section>
@@ -178,7 +178,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
               role="tab"
               aria-selected={activeTab === tab}
               onClick={() => setActiveTab(tab)}
-              className={`border-b-2 px-2 py-3 hover:border-emerald-700 hover:text-emerald-700 ${activeTab === tab ? "border-emerald-700 text-emerald-700" : "border-transparent"}`}
+              className={`border-b-2 px-2 py-3 hover:border-brand-700 hover:text-brand-700 ${activeTab === tab ? "border-brand-700 text-brand-700" : "border-transparent"}`}
             >
               {tab === "Reviews" ? `Reviews (${reviews.length})` : tab}
             </button>
@@ -224,7 +224,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
                         ))}
                       </span>
                       <span className="text-sm font-semibold text-slate-900">{review.authorName}</span>
-                      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">Verified purchase</span>
+                      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-brand-700">Verified purchase</span>
                     </div>
                     {review.title && <p className="mt-2 font-semibold text-slate-900">{review.title}</p>}
                     <p className="mt-1 whitespace-pre-line">{review.body}</p>
@@ -239,7 +239,7 @@ export function ProductDetailPage({ product, related, freeShippingOver, reviews 
         <section className="mt-16">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">You may also like</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">You may also like</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Related products</h2>
             </div>
           </div>

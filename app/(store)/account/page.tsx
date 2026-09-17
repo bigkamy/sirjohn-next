@@ -16,7 +16,7 @@ export default async function Page({ searchParams }: PageProps<"/account">) {
         {notice === "staff-only" && <FormAlert error="The admin area is for team members only." />}
 
         <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Account overview</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Account overview</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">
             Welcome back{user.profile.firstName ? `, ${user.profile.firstName}` : ""}
           </h1>
@@ -39,7 +39,7 @@ export default async function Page({ searchParams }: PageProps<"/account">) {
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl font-bold text-slate-900">Recent Orders</h2>
             {overview.orderCount > 0 && (
-              <Link href="/account/orders" className="text-sm font-semibold text-emerald-700">View all</Link>
+              <Link href="/account/orders" className="text-sm font-semibold text-brand-700">View all</Link>
             )}
           </div>
           <div className="mt-5 space-y-4">

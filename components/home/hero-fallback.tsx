@@ -48,22 +48,22 @@ export function HeroFallback({ lowestPrice, biggestDiscount }: { lowestPrice: nu
   const currentSlide = heroSlides[heroIndex];
 
   return (
-    <section className="relative overflow-hidden bg-[#f6f9f4]">
+    <section className="relative overflow-hidden bg-[#fbf8f3]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(15,23,42,0.06),transparent_45%)]" />
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-[32px] border border-[#e4ebdf] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]">
+        <div className="overflow-hidden rounded-[32px] border border-[#eee7d9] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]">
           <div className="grid min-h-[620px] items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="px-6 py-8 sm:px-10 lg:px-14 lg:py-12">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-brand-700">
                 <Star size={12} className="fill-current" /> New Season 2026
               </div>
               <h1 className="max-w-xl text-4xl font-black leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-7xl">
                 {currentSlide.title}
               </h1>
-              <p className="mt-5 text-xl font-medium text-emerald-700">{currentSlide.subtitle}</p>
+              <p className="mt-5 text-xl font-medium text-brand-700">{currentSlide.subtitle}</p>
               <p className="mt-4 max-w-lg text-base leading-8 text-slate-600">{currentSlide.description}</p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link href="/shop" className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700">
+                <Link href="/shop" className="inline-flex items-center gap-2 rounded-full bg-[#0f172a] px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">
                   {currentSlide.cta} <ArrowRight size={16} />
                 </Link>
               </div>
@@ -75,7 +75,7 @@ export function HeroFallback({ lowestPrice, biggestDiscount }: { lowestPrice: nu
               <div className="absolute inset-0 bg-gradient-to-t from-[#09111b]/70 via-[#09111b]/10 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between gap-4 rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-sm">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.25em] text-emerald-200">Signature gear</p>
+                  <p className="text-xs uppercase tracking-[0.25em] text-brand-200">Signature gear</p>
                   <p className="mt-1 text-xl font-semibold text-white">{siteConfig.name}</p>
                 </div>
                 <button type="button" aria-label="Previous slide" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white" onClick={() => setHeroIndex((heroIndex - 1 + heroSlides.length) % heroSlides.length)}>

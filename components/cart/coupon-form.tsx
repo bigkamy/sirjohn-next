@@ -14,7 +14,7 @@ export function CouponForm({ coupon }: { coupon: CartQuote["coupon"] }) {
   if (coupon) {
     const applied = coupon.status === "applied";
     return (
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4 text-sm">
+      <div className="mt-6 rounded-2xl border border-slate-200 bg-[#faf8f5] p-4 text-sm">
         <div className="flex items-center justify-between gap-3">
           <span className="font-semibold uppercase tracking-[0.12em] text-slate-900">{coupon.code}</span>
           <button
@@ -31,7 +31,7 @@ export function CouponForm({ coupon }: { coupon: CartQuote["coupon"] }) {
             Remove
           </button>
         </div>
-        <p className={`mt-1 ${applied ? "text-emerald-700" : "text-red-600"}`}>
+        <p className={`mt-1 ${applied ? "text-brand-700" : "text-red-600"}`}>
           {couponStatusMessage(coupon.status, coupon.minSubtotal)}
         </p>
         {removeError && (
@@ -51,7 +51,7 @@ export function CouponForm({ coupon }: { coupon: CartQuote["coupon"] }) {
         aria-label="Coupon code"
         placeholder="Coupon code"
         defaultValue={state?.values?.code}
-        className="w-full rounded-full border border-slate-200 bg-[#f7f9f7] px-4 py-3 text-sm text-slate-700 outline-none"
+        className="w-full rounded-full border border-slate-200 bg-[#faf8f5] px-4 py-3 text-sm text-slate-700 outline-none"
       />
       <button
         type="submit"

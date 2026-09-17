@@ -42,7 +42,7 @@ export default async function Page() {
                   const allowed = matrix[role]?.permissions.includes(permission);
                   return (
                     <Td key={role} className="text-center">
-                      {allowed ? <Check size={16} className="mx-auto text-emerald-600" aria-label="Allowed" /> : <Minus size={16} className="mx-auto text-slate-300" aria-label="Not allowed" />}
+                      {allowed ? <Check size={16} className="mx-auto text-brand-600" aria-label="Allowed" /> : <Minus size={16} className="mx-auto text-slate-300" aria-label="Not allowed" />}
                     </Td>
                   );
                 })}
@@ -72,7 +72,7 @@ export default async function Page() {
               <li key={member.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
                 <div className="min-w-0 flex-1">
                   {canManageStaff ? (
-                    <Link href={`/admin/staff/${member.id}`} className="font-medium text-slate-900 hover:text-emerald-700">{member.name}</Link>
+                    <Link href={`/admin/staff/${member.id}`} className="font-medium text-slate-900 hover:text-brand-700">{member.name}</Link>
                   ) : (
                     <p className="font-medium text-slate-900">{member.name}</p>
                   )}

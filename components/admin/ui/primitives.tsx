@@ -18,7 +18,7 @@ export function PageHeader({
     <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         {back && (
-          <Link href={back.href} className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-emerald-700">
+          <Link href={back.href} className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-brand-700">
             <ArrowLeft size={15} aria-hidden /> {back.label}
           </Link>
         )}
@@ -63,7 +63,7 @@ export function StatCard({
     <>
       <div className="flex items-start justify-between gap-3">
         <p className="text-sm font-medium text-slate-500">{label}</p>
-        {icon && <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700" aria-hidden>{icon}</span>}
+        {icon && <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700" aria-hidden>{icon}</span>}
       </div>
       <p className="mt-2 text-[26px] font-bold tracking-tight text-slate-900">{value}</p>
       {detail && <p className="mt-1 text-xs text-slate-500">{detail}</p>}
@@ -71,7 +71,7 @@ export function StatCard({
   );
 
   return href ? (
-    <Link href={href} className={`${cardClass} group block p-5 transition hover:border-emerald-300`}>
+    <Link href={href} className={`${cardClass} group block p-5 transition hover:border-brand-300`}>
       {body}
       <span className="sr-only">View details</span>
     </Link>
@@ -104,7 +104,7 @@ export function Notice({ tone = "info", children }: { tone?: "info" | "warning";
 
 export function TextLink({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:text-emerald-900">
+    <Link href={href} className="inline-flex items-center gap-1 text-sm font-medium text-brand-700 hover:text-brand-900">
       {children} <ArrowUpRight size={14} aria-hidden />
     </Link>
   );

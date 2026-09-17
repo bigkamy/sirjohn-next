@@ -47,7 +47,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/reviews">
                 key={tab.label}
                 href={`/admin/reviews?status=${tab.value || "all"}`}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-lg px-3 py-2 text-sm font-medium ${active ? "bg-emerald-50 text-emerald-800" : "text-slate-600 hover:bg-slate-100"}`}
+                className={`rounded-lg px-3 py-2 text-sm font-medium ${active ? "bg-brand-50 text-brand-800" : "text-slate-600 hover:bg-slate-100"}`}
               >
                 {tab.label}
                 {tab.value === "pending" && pendingCount > 0 && <span className="ml-1.5 rounded-full bg-amber-100 px-1.5 text-xs text-amber-800">{pendingCount}</span>}
@@ -74,7 +74,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/reviews">
                       ))}
                     </span>
                     <ReviewStatusBadge status={review.status} />
-                    <Link href={`/product/${review.productSlug}`} target="_blank" prefetch={false} className="text-sm font-medium text-slate-700 hover:text-emerald-700">
+                    <Link href={`/product/${review.productSlug}`} target="_blank" prefetch={false} className="text-sm font-medium text-slate-700 hover:text-brand-700">
                       {review.productName}
                     </Link>
                   </div>
@@ -86,7 +86,7 @@ export default async function Page({ searchParams }: PageProps<"/admin/reviews">
                     {review.orderNumber && (
                       <>
                         {" · "}
-                        <Link href={`/admin/orders/${encodeURIComponent(review.orderNumber)}`} className="text-emerald-700">
+                        <Link href={`/admin/orders/${encodeURIComponent(review.orderNumber)}`} className="text-brand-700">
                           Order #{review.orderNumber}
                         </Link>
                       </>

@@ -3,7 +3,7 @@ import Link from "next/link";
 export type BarListItem = { key: string | number; name: string; href?: string; value: number; valueLabel: string };
 
 // Same validated series colour as the trend charts. Every bar carries its value as a label.
-const SERIES = "#047857";
+const SERIES = "#875719";
 
 /** Ranked horizontal bars, labelled with their values. */
 export function BarList({ items }: { items: BarListItem[] }) {
@@ -17,7 +17,7 @@ export function BarList({ items }: { items: BarListItem[] }) {
             <span className="min-w-0 truncate font-medium text-slate-800">
               <span className="mr-1.5 tabular-nums text-slate-400">{index + 1}.</span>
               {item.href ? (
-                <Link href={item.href} className="hover:text-emerald-700">
+                <Link href={item.href} className="hover:text-brand-700">
                   {item.name}
                 </Link>
               ) : (

@@ -13,7 +13,7 @@ import { siteConfig } from "@/lib/site-config";
 import { siteUrl } from "@/lib/site-url";
 
 const COLORS = {
-  page: "#f4f6f5",
+  page: "#f9f6f2",
   card: "#ffffff",
   border: "#e2e8f0",
   ink: "#0f172a",

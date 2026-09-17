@@ -17,7 +17,7 @@ const faqs = [
 function Detail({ icon, label, children }: { icon: ReactNode; label: string; children: ReactNode }) {
   return (
     <div className="flex items-start gap-4">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">{icon}</div>
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">{icon}</div>
       <div>
         <div className="font-bold text-slate-900">{label}</div>
         <div className="text-sm text-slate-600">{children}</div>
@@ -33,7 +33,7 @@ export function ContactPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-10 text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Contact us</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Contact us</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">Let’s talk golf</h1>
       </div>
 
@@ -44,12 +44,12 @@ export function ContactPage() {
           )}
           {contact.phone && (
             <Detail icon={<Phone size={18} />} label="Phone">
-              <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="hover:text-emerald-700">{contact.phone}</a>
+              <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="hover:text-brand-700">{contact.phone}</a>
             </Detail>
           )}
           {contact.email && (
             <Detail icon={<Mail size={18} />} label="Email">
-              <a href={`mailto:${contact.email}`} className="hover:text-emerald-700">{contact.email}</a>
+              <a href={`mailto:${contact.email}`} className="hover:text-brand-700">{contact.email}</a>
             </Detail>
           )}
           {contact.hours && (
@@ -72,14 +72,14 @@ export function ContactPage() {
         <h2 className="mb-5 text-2xl font-bold text-slate-900">FAQ</h2>
         <div className="space-y-4 text-sm text-slate-600">
           {faqs.map((faq) => (
-            <details key={faq.question} className="group rounded-2xl border border-slate-200 bg-[#f7f9f7] p-4">
+            <details key={faq.question} className="group rounded-2xl border border-slate-200 bg-[#faf8f5] p-4">
               <summary className="cursor-pointer font-medium text-slate-700">{faq.question}</summary>
               <p className="mt-3 leading-6">{faq.answer}</p>
             </details>
           ))}
         </div>
         <p className="mt-5 text-sm text-slate-600">
-          Something else? <a href="#send-message" className="font-semibold text-emerald-700">Send us a message</a> and we’ll get back to you.
+          Something else? <a href="#send-message" className="font-semibold text-brand-700">Send us a message</a> and we’ll get back to you.
         </p>
       </section>
     </main>

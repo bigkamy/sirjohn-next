@@ -12,7 +12,7 @@ export function CartPage({ quote }: { quote: CartQuote }) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Your cart</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Your cart</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">Shopping Cart</h1>
       </div>
 
@@ -29,7 +29,7 @@ export function CartPage({ quote }: { quote: CartQuote }) {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="text-xl font-bold text-slate-900">
-                        <Link href={`/product/${line.slug}`} className="hover:text-emerald-700">{line.name}</Link>
+                        <Link href={`/product/${line.slug}`} className="hover:text-brand-700">{line.name}</Link>
                       </h2>
                       <p className="mt-1 text-sm text-slate-500">{line.brand}</p>
                       <LineDetails options={line.options} optionsValid={line.optionsValid} quantity={line.quantity} stock={line.stock} />
@@ -65,7 +65,7 @@ export function CartPage({ quote }: { quote: CartQuote }) {
 
             <CouponForm coupon={quote.coupon} />
 
-            <Link href="/checkout" className="mt-6 block w-full rounded-full bg-emerald-500 px-4 py-3 text-center text-sm font-semibold text-slate-900">Proceed to Checkout</Link>
+            <Link href="/checkout" className="mt-6 block w-full rounded-full bg-brand-500 px-4 py-3 text-center text-sm font-semibold text-slate-900">Proceed to Checkout</Link>
             <Link href="/shop" className="mt-3 block w-full rounded-full border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-700">Continue Shopping</Link>
           </aside>
         </div>

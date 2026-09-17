@@ -66,7 +66,7 @@ export function MediaPicker({ onSelect, canUpload, label = "Choose from library"
                       onSelect(file.url);
                       dialog.current?.close();
                     }}
-                    className="block w-full overflow-hidden rounded-xl border border-slate-200 text-left transition hover:border-emerald-400 focus-visible:outline-2 focus-visible:outline-emerald-600"
+                    className="block w-full overflow-hidden rounded-xl border border-slate-200 text-left transition hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-brand-600"
                   >
                     <img src={file.url} alt="" className="aspect-square w-full bg-slate-50 object-cover" />
                     <span className="block truncate px-2 py-1.5 text-xs text-slate-600">{file.name}</span>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useShopperState } from "@/components/shopper/shopper-state";
 import { logout } from "@/lib/auth/actions";
 
-const linkClass = "font-medium text-white hover:text-emerald-300";
+const linkClass = "font-medium text-white hover:text-brand-300";
 
 export function HeaderAuthLinks() {
   const { signedIn, name, initials, avatarUrl } = useShopperState();
@@ -15,7 +15,7 @@ export function HeaderAuthLinks() {
         <>
           {/* Who is signed in. The details arrive from /api/shopper after hydration, so the
               band stays the same height whether or not anyone is signed in. */}
-          <Link href="/account" className="flex items-center gap-2 text-white hover:text-emerald-300">
+          <Link href="/account" className="flex items-center gap-2 text-white hover:text-brand-300">
             {avatarUrl ? (
               <img
                 src={avatarUrl}
@@ -27,7 +27,7 @@ export function HeaderAuthLinks() {
             ) : (
               <span
                 aria-hidden
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/25 text-[10px] font-bold text-emerald-200 ring-1 ring-white/25"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-500/25 text-[10px] font-bold text-brand-200 ring-1 ring-white/25"
               >
                 {initials}
               </span>

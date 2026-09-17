@@ -60,7 +60,7 @@ export function Select({
 export function Checkbox({ label, description, ...props }: { label: string; description?: ReactNode } & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="flex items-start gap-3 text-sm">
-      <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" {...props} />
+      <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500" {...props} />
       <span>
         <span className="font-medium text-slate-800">{label}</span>
         {description && <span className="block text-slate-500">{description}</span>}

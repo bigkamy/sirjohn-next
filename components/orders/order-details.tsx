@@ -6,7 +6,7 @@ import { orderStatusLabel, paymentStatusLabel } from "@/lib/order-status";
 import type { OrderDetail } from "@/lib/orders";
 import { formatOptions } from "@/lib/product-options";
 
-const pillClass = "rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700";
+const pillClass = "rounded-full bg-brand-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-brand-700";
 
 export function OrderDetails({ order }: { order: OrderDetail }) {
   const address = order.shippingAddress;
@@ -17,13 +17,13 @@ export function OrderDetails({ order }: { order: OrderDetail }) {
         <h2 className="text-xl font-bold text-slate-900">Items</h2>
         <div className="mt-4 space-y-3">
           {order.items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between gap-4 rounded-2xl bg-[#f7f9f7] p-3">
+            <div key={item.id} className="flex items-center justify-between gap-4 rounded-2xl bg-[#faf8f5] p-3">
               <div className="flex items-center gap-3">
                 {item.image && <img src={item.image} alt="" className="h-14 w-14 rounded-xl object-cover" />}
                 <div>
                   <div className="font-semibold text-slate-900">
                     {item.slug ? (
-                      <Link href={`/product/${item.slug}`} className="hover:text-emerald-700">{item.productName}</Link>
+                      <Link href={`/product/${item.slug}`} className="hover:text-brand-700">{item.productName}</Link>
                     ) : (
                       item.productName
                     )}

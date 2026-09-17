@@ -7,7 +7,7 @@ import { NETWORK_ERROR } from "@/lib/messages";
 import { moveWishlistItemToCart, removeFromWishlist } from "@/lib/wishlist-actions";
 
 const primaryClass =
-  "inline-flex flex-1 items-center justify-center rounded-full bg-[#0f172a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-60";
+  "inline-flex flex-1 items-center justify-center rounded-full bg-[#0f172a] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60";
 const secondaryClass =
   "rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-red-200 hover:text-red-600 disabled:opacity-60";
 

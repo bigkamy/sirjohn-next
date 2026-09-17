@@ -11,7 +11,7 @@ type ToastItem = { id: number; message: string; tone: ToastTone };
 const ToastContext = createContext<(toast: ToastInput) => void>(() => {});
 
 const ICONS = { success: CheckCircle2, error: TriangleAlert, info: Info };
-const ICON_COLORS = { success: "text-emerald-600", error: "text-red-600", info: "text-sky-600" };
+const ICON_COLORS = { success: "text-brand-600", error: "text-red-600", info: "text-sky-600" };
 
 let nextId = 1;
 

@@ -34,7 +34,7 @@ export default async function Page({ searchParams }: PageProps<"/account/address
                 <div className="flex items-center gap-2">
                   <h2 className="text-lg font-bold text-slate-900">{address.label}</h2>
                   {address.isDefault && (
-                    <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">Default</span>
+                    <span className="rounded-full bg-brand-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-brand-700">Default</span>
                   )}
                 </div>
                 <div className="mt-3 flex-1 text-sm leading-6 text-slate-600">
@@ -51,7 +51,7 @@ export default async function Page({ searchParams }: PageProps<"/account/address
                   <Link
                     href={`/account/addresses/${address.id}`}
                     aria-label={`Edit ${address.label} address`}
-                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-300 hover:text-emerald-700"
+                    className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700"
                   >
                     Edit
                   </Link>

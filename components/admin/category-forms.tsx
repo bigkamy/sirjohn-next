@@ -68,7 +68,7 @@ export function CategoryRow({ category, canManage }: { category: AdminCategory; 
   return (
     <li aria-label={`${category.name} category`} className="px-5 py-4">
       <div className="flex flex-wrap items-center gap-4">
-        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-[#0f172a] to-emerald-700">
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-[#0f172a] to-brand-700">
           {category.image && <img src={category.image} alt="" className="h-full w-full object-cover" />}
         </div>
         <div className="min-w-0 flex-1">

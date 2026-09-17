@@ -48,7 +48,7 @@ export function WishlistButton({ slug, name, className, iconSize = 16 }: Wishlis
       onClick={toggle}
       className={className}
     >
-      <Heart size={iconSize} className={saved ? "fill-emerald-600 text-emerald-600" : error ? "text-red-500" : undefined} />
+      <Heart size={iconSize} className={saved ? "fill-brand-600 text-brand-600" : error ? "text-red-500" : undefined} />
       {error && (
         <span role="alert" className="sr-only">
           {error}

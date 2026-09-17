@@ -160,7 +160,7 @@ export function ProductForm({ product, categories }: { product?: AdminProduct; c
                   <p className="mb-1.5 text-sm font-medium text-slate-700">Stock</p>
                   <p className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-600">
                     {product.stock} in stock ·{" "}
-                    <Link href={`/admin/inventory?q=${encodeURIComponent(product.name)}`} className="font-medium text-emerald-700">
+                    <Link href={`/admin/inventory?q=${encodeURIComponent(product.name)}`} className="font-medium text-brand-700">
                       adjust in Inventory
                     </Link>
                   </p>

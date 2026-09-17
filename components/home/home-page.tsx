@@ -27,7 +27,7 @@ const banners = [
 ];
 
 /** Shown where an image hasn't been set yet, so no unrelated stock photo stands in. */
-const plainPanel = "bg-gradient-to-br from-[#0f172a] via-[#123a2f] to-emerald-700";
+const plainPanel = "bg-gradient-to-br from-[#0f172a] via-[#6b4516] to-brand-700";
 
 const discountPercent = (product: Product) =>
   product.originalPrice > product.price ? Math.round((1 - product.price / product.originalPrice) * 100) : 0;
@@ -91,7 +91,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
           {benefits.map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-brand-500/20 text-brand-300">
                 <Icon size={18} />
               </div>
               <h3 className="mb-1 text-base font-semibold">{title}</h3>
@@ -106,10 +106,10 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
           <section className="mb-20">
             <div className="mb-8 flex items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Shop by category</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Shop by category</p>
                 <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">Built for every round</h2>
               </div>
-              <Link href="/shop" className="hidden text-sm font-semibold text-slate-700 hover:text-emerald-700 sm:inline-flex">View all</Link>
+              <Link href="/shop" className="hidden text-sm font-semibold text-slate-700 hover:text-brand-700 sm:inline-flex">View all</Link>
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -124,7 +124,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#09111b]/80 via-[#09111b]/30 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                      <p className="text-sm uppercase tracking-[0.24em] text-emerald-200">
+                      <p className="text-sm uppercase tracking-[0.24em] text-brand-200">
                         {count === 0 ? "Coming soon" : `${count} ${count === 1 ? "Product" : "Products"}`}
                       </p>
                       <h3 className="mt-2 text-2xl font-bold">{category.name}</h3>
@@ -139,7 +139,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         <section className="mb-20">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Featured products</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Featured products</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Performance picks</h2>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -150,7 +150,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
                   aria-pressed={activeTab === tab.label}
                   onClick={() => setActiveTab(tab.label)}
                   className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    activeTab === tab.label ? "bg-[#0f172a] text-white" : "bg-[#eef3ee] text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
+                    activeTab === tab.label ? "bg-[#0f172a] text-white" : "bg-[#f6f1e8] text-slate-700 hover:bg-brand-50 hover:text-brand-700"
                   }`}
                 >
                   {tab.label}
@@ -180,7 +180,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-[#09111b]/80 via-[#09111b]/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                <p className="text-xs uppercase tracking-[0.28em] text-emerald-200">{banner.eyebrow}</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-brand-200">{banner.eyebrow}</p>
                 <h3 className="mt-2 text-2xl font-bold">{banner.title}</h3>
                 <Link href={banner.href} className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
                   Shop Now <ArrowRight size={15} />
@@ -192,13 +192,13 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
 
         <section className="mb-20">
           <div className="mb-8 text-center">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Every golfer’s choice</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Every golfer’s choice</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Find your fit</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {["Beginner", "Intermediate", "Professional", "Junior", "Women", "Training"].map((fit, index) => (
-              <div key={fit} className="rounded-[26px] border border-slate-200 bg-[#f7f9f7] p-6 text-center transition hover:border-emerald-300 hover:bg-white hover:shadow-md">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-xl font-black text-emerald-700">{index + 1}</div>
+              <div key={fit} className="rounded-[26px] border border-slate-200 bg-[#faf8f5] p-6 text-center transition hover:border-brand-300 hover:bg-white hover:shadow-md">
+                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-xl font-black text-brand-700">{index + 1}</div>
                 <h3 className="text-lg font-bold text-slate-900">{fit}</h3>
                 <p className="mt-2 text-sm text-slate-500">Curated for your level</p>
               </div>
@@ -207,20 +207,20 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         </section>
 
         {brands.length > 0 && (
-          <section className="mb-20 rounded-[32px] border border-slate-200 bg-[#f4f6f1] p-8">
+          <section className="mb-20 rounded-[32px] border border-slate-200 bg-[#f9f6f0] p-8">
             <div className="mb-8 flex items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Shop by brands</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Shop by brands</p>
                 <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Trusted names</h2>
               </div>
-              <Link href="/shop" className="text-sm font-semibold text-slate-700 hover:text-emerald-700">Browse all brands</Link>
+              <Link href="/shop" className="text-sm font-semibold text-slate-700 hover:text-brand-700">Browse all brands</Link>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
               {brands.map((brand) => (
                 <Link
                   key={brand}
                   href={`/shop?brand=${encodeURIComponent(brand)}`}
-                  className="flex h-20 items-center justify-center rounded-2xl border border-slate-200 bg-white text-center text-lg font-black tracking-[0.15em] text-slate-700 shadow-sm transition hover:border-emerald-300 hover:text-emerald-700"
+                  className="flex h-20 items-center justify-center rounded-2xl border border-slate-200 bg-white text-center text-lg font-black tracking-[0.15em] text-slate-700 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
                 >
                   {brand}
                 </Link>
@@ -233,10 +233,10 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
           <section className="mb-20">
             <div className="mb-8 flex items-end justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Deal of the day</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Deal of the day</p>
                 <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Best value right now</h2>
               </div>
-              <div className="flex items-center gap-3 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">
+              <div className="flex items-center gap-3 rounded-full border border-brand-200 bg-brand-50 px-3 py-2 text-sm font-semibold text-brand-700">
                 Save {discountPercent(deal)}%
               </div>
             </div>
@@ -244,14 +244,14 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
             <div className="grid gap-8 rounded-[32px] bg-[#0f172a] p-8 text-white lg:grid-cols-[1fr_1.2fr]">
               <img src={deal.image} alt={deal.name} className="h-full min-h-[300px] rounded-[24px] object-cover" />
               <div className="flex flex-col justify-center">
-                <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">{deal.brand}</p>
+                <p className="text-sm uppercase tracking-[0.3em] text-brand-300">{deal.brand}</p>
                 <h3 className="mt-4 text-4xl font-black tracking-tight">{deal.name}</h3>
                 <div className="mt-5 flex items-center gap-4">
                   <span className="text-3xl font-bold">{formatPrice(deal.price)}</span>
                   <span className="text-xl text-slate-400 line-through">{formatPrice(deal.originalPrice)}</span>
                 </div>
                 <p className="mt-4 max-w-lg text-base leading-7 text-slate-300">{deal.shortDescription || deal.description}</p>
-                <Link href={`/product/${deal.slug}`} className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-emerald-400">
+                <Link href={`/product/${deal.slug}`} className="mt-8 inline-flex w-fit items-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-brand-400">
                   Shop Now <ArrowRight size={15} />
                 </Link>
               </div>
@@ -262,7 +262,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         {siteConfig.testimonials.length > 0 && (
           <section className="mb-20">
             <div className="mb-8 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Customer reviews</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Customer reviews</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Loved by golfers</h2>
             </div>
             <div className="grid gap-6 lg:grid-cols-3">
@@ -287,7 +287,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         {siteImages.story.length > 0 && (
           <section className="mb-20">
             <div className="mb-8 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">Golf journey</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">Golf journey</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">Follow our story</h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -304,7 +304,7 @@ export function HomePage({ products, categories, freeShippingOver, heroSlides }:
         <section className="mb-20 rounded-[32px] bg-[#0f172a] p-8 text-white lg:p-12">
           <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Exclusive offers</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-300">Exclusive offers</p>
               <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">Get the latest golf drops and specials</h2>
             </div>
             <NewsletterForm />

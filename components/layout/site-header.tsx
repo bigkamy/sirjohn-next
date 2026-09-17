@@ -29,7 +29,7 @@ export function SiteHeader({ categories }: { categories: string[] }) {
     <>
       {/* Outside the sticky header on purpose: a sticky element can only travel inside its
           own parent, so the bar that scrolls away has to be a sibling, not a child. */}
-      <div className="border-b border-[#edf0ec] bg-[#0f172a] text-xs text-slate-200">
+      <div className="border-b border-[#f1ece3] bg-[#0f172a] text-xs text-slate-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2 text-center sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-start">
             {country && <span>📍 Store Location: {country}</span>}
@@ -37,7 +37,7 @@ export function SiteHeader({ categories }: { categories: string[] }) {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:justify-end">
             {contact.phone && (
               <>
-                <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="hover:text-emerald-300">
+                <a href={`tel:${contact.phone.replace(/\s+/g, "")}`} className="hover:text-brand-300">
                   Call Us: {contact.phone}
                 </a>
                 <span>•</span>
@@ -51,7 +51,7 @@ export function SiteHeader({ categories }: { categories: string[] }) {
       {/* Stays put while the page scrolls. z-40 keeps it — and the mobile menu that drops
           below it — above page content; the blur creates its own stacking context, so the
           menu's z-index alone isn't enough. */}
-      <header className="sticky top-0 z-40 border-b border-[#e8ece7] bg-white/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-40 border-b border-[#ece5d8] bg-white/95 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <MobileMenu items={navItems} categories={categories} />
@@ -62,7 +62,7 @@ export function SiteHeader({ categories }: { categories: string[] }) {
 
             {/* From lg, where the menu button disappears: below that, search lives in the menu
                 panel, and showing both left the row too narrow to fit. */}
-            <form action="/shop" role="search" className="hidden min-w-0 flex-1 items-center gap-3 rounded-full border border-slate-200 bg-[#f7f8f6] px-3 py-2 lg:flex">
+            <form action="/shop" role="search" className="hidden min-w-0 flex-1 items-center gap-3 rounded-full border border-slate-200 bg-[#faf8f5] px-3 py-2 lg:flex">
               <select name="category" aria-label="Category" className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none">
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -95,7 +95,7 @@ export function SiteHeader({ categories }: { categories: string[] }) {
           </div>
         </div>
 
-        <nav aria-label="Main" className="border-t border-[#edf0ec] bg-[#f6f8f4]">
+        <nav aria-label="Main" className="border-t border-[#f1ece3] bg-[#faf8f4]">
           <div className="mx-auto flex max-w-7xl items-center justify-center gap-8 overflow-x-auto px-4 py-4 text-sm font-medium text-slate-700 sm:justify-between lg:px-8">
             {navItems.map((item) => {
               const Icon = navIcon(item.label);
@@ -103,9 +103,9 @@ export function SiteHeader({ categories }: { categories: string[] }) {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="group inline-flex items-center gap-2 whitespace-nowrap transition hover:text-emerald-700"
+                  className="group inline-flex items-center gap-2 whitespace-nowrap transition hover:text-brand-700"
                 >
-                  <Icon size={16} aria-hidden className="shrink-0 text-emerald-700/70 transition group-hover:text-emerald-700" />
+                  <Icon size={16} aria-hidden className="shrink-0 text-brand-700/70 transition group-hover:text-brand-700" />
                   {item.label}
                 </Link>
               );

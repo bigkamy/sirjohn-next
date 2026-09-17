@@ -75,7 +75,7 @@ export default async function Page() {
             <li>With one slide showing, the arrows, dots and autoplay are switched off.</li>
             <li>With none showing, the home page uses its built-in hero instead.</li>
             <li>Slides advance every 5 seconds and pause while a visitor hovers or tabs through them.</li>
-            <li>Deleting a slide never deletes the picture — manage files in <Link href="/admin/media" className="text-emerald-700">Media</Link>.</li>
+            <li>Deleting a slide never deletes the picture — manage files in <Link href="/admin/media" className="text-brand-700">Media</Link>.</li>
           </ul>
         </Card>
 

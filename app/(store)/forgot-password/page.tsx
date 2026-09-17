@@ -17,7 +17,7 @@ export default function Page() {
       <ForgotPasswordForm />
 
       <p className="mt-6 text-center text-sm text-slate-600">
-        Remembered it? <Link href="/login" className="font-semibold text-emerald-700">Back to login</Link>
+        Remembered it? <Link href="/login" className="font-semibold text-brand-700">Back to login</Link>
       </p>
     </AuthShell>
   );

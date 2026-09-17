@@ -54,7 +54,7 @@ export default async function Page() {
                   <tr key={payment.id}>
                     <Td>
                       {payment.orderNumber ? (
-                        <Link href={`/admin/orders/${encodeURIComponent(payment.orderNumber)}`} className="font-medium text-slate-900 hover:text-emerald-700">
+                        <Link href={`/admin/orders/${encodeURIComponent(payment.orderNumber)}`} className="font-medium text-slate-900 hover:text-brand-700">
                           #{payment.orderNumber}
                         </Link>
                       ) : (

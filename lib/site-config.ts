@@ -33,7 +33,7 @@ export const siteConfig = {
     logoSrcDark: null as string | null,
     /** Colours used for the generated icons and the browser theme colour. */
     primaryColor: "#0f172a",
-    accentColor: "#34d399",
+    accentColor: "#d89634",
   },
 
   /** Registered legal name of the business, used in the policies and footer. */

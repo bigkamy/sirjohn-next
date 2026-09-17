@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       {/* Browser extensions (e.g. ColorZilla) add attributes to <body> before React loads. */}
-      <body className="min-h-full bg-[#f5f7f4] text-slate-900" suppressHydrationWarning>
+      <body className="min-h-full bg-[#faf8f4] text-slate-900" suppressHydrationWarning>
         {children}
       </body>
     </html>

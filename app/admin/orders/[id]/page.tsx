@@ -99,7 +99,7 @@ export default async function Page({ params }: PageProps<"/admin/orders/[id]">) 
               title="Customer"
               action={
                 order.userId && can("customers.view") ? (
-                  <Link href={`/admin/customers/${order.userId}`} className="text-sm font-medium text-emerald-700 hover:text-emerald-900">
+                  <Link href={`/admin/customers/${order.userId}`} className="text-sm font-medium text-brand-700 hover:text-brand-900">
                     View customer
                   </Link>
                 ) : undefined
@@ -108,7 +108,7 @@ export default async function Page({ params }: PageProps<"/admin/orders/[id]">) 
             <DetailList
               items={[
                 { label: "Name", value: address.fullName },
-                { label: "Email", value: <a href={`mailto:${order.email}`} className="text-emerald-700">{order.email}</a> },
+                { label: "Email", value: <a href={`mailto:${order.email}`} className="text-brand-700">{order.email}</a> },
                 { label: "Phone", value: address.phone },
               ]}
             />

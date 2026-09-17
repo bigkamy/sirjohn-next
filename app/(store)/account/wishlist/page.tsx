@@ -20,7 +20,7 @@ export default async function Page() {
         {entries.length === 0 ? (
           <div className="rounded-[28px] border border-slate-200 bg-white p-6 text-sm text-slate-600 shadow-sm">
             Your wishlist is empty. Tap the heart on any product to save it here.{" "}
-            <Link href="/shop" className="font-semibold text-emerald-700">Browse the shop</Link>
+            <Link href="/shop" className="font-semibold text-brand-700">Browse the shop</Link>
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -32,8 +32,8 @@ export default async function Page() {
                   </Link>
                   <div className="space-y-3 p-5">
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-700/80">{product.brand}</p>
-                      <Link href={`/product/${product.slug}`} className="mt-1 block text-lg font-semibold text-slate-900 hover:text-emerald-700">
+                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand-700/80">{product.brand}</p>
+                      <Link href={`/product/${product.slug}`} className="mt-1 block text-lg font-semibold text-slate-900 hover:text-brand-700">
                         {product.name}
                       </Link>
                     </div>
@@ -43,7 +43,7 @@ export default async function Page() {
                         <span className="text-sm text-slate-400 line-through">{formatPrice(product.originalPrice)}</span>
                       )}
                     </div>
-                    <p className={`text-sm font-medium ${product.stock > 0 ? "text-emerald-700" : "text-red-600"}`}>
+                    <p className={`text-sm font-medium ${product.stock > 0 ? "text-brand-700" : "text-red-600"}`}>
                       {product.stock > 0 ? "In stock" : "Out of stock"}
                     </p>
                     <WishlistItemActions

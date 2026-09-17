@@ -26,7 +26,7 @@ export function AuthShell({ eyebrow, title, image, children }: AuthShellProps) {
         )}
 
         <div className="p-8 sm:p-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-700">{eyebrow}</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-700">{eyebrow}</p>
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">{title}</h1>
           {children}
         </div>

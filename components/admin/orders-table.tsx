@@ -19,7 +19,7 @@ export function OrdersTable({ orders, showCustomer = true }: { orders: AdminOrde
         {orders.map((order) => (
           <tr key={order.orderNumber} className="hover:bg-slate-50/70">
             <Td>
-              <Link href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`} className="font-semibold text-slate-900 hover:text-emerald-700">
+              <Link href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`} className="font-semibold text-slate-900 hover:text-brand-700">
                 #{order.orderNumber}
               </Link>
               <div className="text-xs text-slate-500">

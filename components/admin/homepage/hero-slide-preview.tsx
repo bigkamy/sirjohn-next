@@ -35,8 +35,8 @@ export function HeroSlidePreview({ slide }: { slide: AdminHeroSlide }) {
           <button type="button" onClick={() => dialog.current?.close()} className={buttonClass("secondary", "sm")}>Close</button>
         </div>
 
-        <div className="max-h-[70vh] overflow-y-auto bg-[#f6f9f4] p-5">
-          <div className="overflow-hidden rounded-[24px] border border-[#e4ebdf] bg-white shadow-sm">
+        <div className="max-h-[70vh] overflow-y-auto bg-[#fbf8f3] p-5">
+          <div className="overflow-hidden rounded-[24px] border border-[#eee7d9] bg-white shadow-sm">
             <div className="grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="order-2 px-6 py-7 lg:order-1 lg:px-10">
                 <p className="text-2xl font-black leading-tight tracking-tight text-slate-900 sm:text-3xl">{slide.title}</p>

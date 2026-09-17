@@ -125,7 +125,7 @@ export function RoleSelect({ userId, name, role, assignable, isSelf }: { userId:
         value={value}
         onChange={(event) => setValue(event.target.value as UserRole)}
         aria-label={`Role for ${name}`}
-        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm outline-none focus:border-emerald-500"
+        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm outline-none focus:border-brand-500"
       >
         {roles.map((option) => (
           <option key={option} value={option}>{ROLE_LABELS[option]}</option>

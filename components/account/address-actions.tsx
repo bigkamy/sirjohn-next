@@ -28,7 +28,7 @@ export function AddressActions({ id, label, isDefault }: { id: string; label: st
           type="button"
           disabled={pending}
           onClick={() => run(setDefaultAddress)}
-          className={`${buttonClass} hover:border-emerald-300 hover:text-emerald-700`}
+          className={`${buttonClass} hover:border-brand-300 hover:text-brand-700`}
         >
           Set as Default
         </button>
