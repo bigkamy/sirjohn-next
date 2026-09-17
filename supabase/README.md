@@ -35,6 +35,35 @@ or paste each file in `migrations/` into the **SQL Editor**, in filename order, 
 | `20260916000000_staff_roles_and_statuses.sql` | Staff roles (super admin, admin, manager, staff) and the `confirmed` / `refunded` order statuses |
 | `20260916000100_admin_platform.sql`         | Role-based permissions on every admin policy and function, staff activity log, verified product reviews, SKU and low-stock alerts, the `media` storage bucket, and the customer, staff, analytics and system-health functions. Existing admins become super admins |
 | `20260917000000_order_confirmation_email.sql` | Delivery state of each order's confirmation email, plus `claim_order_confirmation_email` and `record_order_confirmation_email` — the claim is what stops a second email going out |
+| `20260918000000_home_hero_slides.sql`       | Home page hero slides, managed from `/admin/homepage`                    |
+| `20260919000000_sir_john_catalog.sql`       | The real catalog: ten categories and 32 Sir John products built from `public/images/Product`, unpriced (see below) |
+| `20260920000000_remove_sample_products.sql` | Deletes the `seed.sql` demo products, now that the real catalog is in — the same thing "Remove samples" does in `/admin/products` |
+| `20260921000000_profile_avatars.sql`        | `profiles.avatar_url` and the public `avatars` bucket, where each customer may only write inside a folder named after their own user id. Uploaded from `/account/profile`; no photo shows their initials |
+
+### The Sir John catalog
+
+`20260919000000_sir_john_catalog.sql` loads the 32 products photographed in
+`public/images/Product`, one per image, into ten categories: the original six (Clubs, Bags,
+Balls, Apparel, Footwear, Accessories) plus **Course Essentials**, **Drinkware**,
+**Wellness**, and **Gifts & Trophies**. Each category also gets a home page tile image.
+
+**Prices are not set.** Every product arrives with `price = 0` and `stock = 0`: visible in
+the store so the catalog can be reviewed, but impossible to order, because the cart and
+`place_order` both refuse a product with no stock. That zero stock is the only thing standing
+between a ₹0 product and a free order, so finish each one in `/admin/products` → the product
+→ **Edit** before you set any stock:
+
+1. **Pricing** — set the price, and a sale price if the product is on offer.
+2. **Options** — add the choices a customer must make. The glove needs *Hand Orientation*
+   (Right Hand, Left Hand) and *Size*; the shoes need *Size*; socks, the belt and the cap
+   need *Size* if you stock more than one.
+3. **Details** — add a SKU if you use them (left empty by the migration).
+4. **Inventory** — last: set the stock from `/admin/inventory`, which is what makes the
+   product buyable. Set the low-stock alert level while you are there.
+
+They are not sample data, so "remove samples" on the launch checklist leaves them alone.
+The migration is safe to re-run: it skips products whose slug already exists, so your prices
+and edits are never overwritten.
 
 `seed.sql` is **sample data for development and testing** — six demo products (flagged
 `is_sample`, labelled “Sample” in the store, with a placeholder image and no ratings), the
@@ -70,7 +99,7 @@ where id = (select id from auth.users where email = 'you@example.com');
 This is the only role you set by hand. Everyone else gets their role from `/admin/staff`:
 they register a normal account first, then a super admin, admin, or manager finds them by
 email and assigns a role. Customers can only ever update their own `first_name`,
-`last_name`, and `phone`, and nobody can change their own role.
+`last_name`, `phone`, and `avatar_url`, and nobody can change their own role.
 
 ## Roles and permissions
 
@@ -104,7 +133,7 @@ Business rules live in tables, so they can be changed without a deploy:
 | `shipping_methods` | Standard ₹799, free from ₹2,999 · Express ₹799                           | `/admin/shipping`   |
 | `coupons`          | `WELCOME10` (from `seed.sql`): 10% off orders ≥ ₹5,000, max ₹5,000 off | `/admin/coupons`    |
 | `products.options` | Set per product (sample clubs: Hand Orientation + Shaft Flex)            | `/admin/products`   |
-| `categories`       | Clubs, Bags, Apparel, Accessories, Footwear, Balls                       | `/admin/categories` |
+| `categories`       | Clubs, Bags, Balls, Apparel, Footwear, Accessories, Course Essentials, Drinkware, Wellness, Gifts & Trophies | `/admin/categories` |
 
 The storefront's "Free shipping over …" copy is read from `shipping_methods` too, so it always
 matches what checkout charges.
@@ -145,7 +174,7 @@ connected yet. The schema is ready for one:
 
 | Data               | Customers                                   | Staff roles (by permission) |
 | ------------------ | ------------------------------------------- | --------------------------- |
-| Profiles           | Read own; update name and phone only        | Read all (`customers.view`); roles change only through `admin_set_user_role` |
+| Profiles           | Read own; update name, phone and photo only | Read all (`customers.view`); roles change only through `admin_set_user_role` |
 | Cart, wishlist, addresses | Full control of their own rows only  | —                           |
 | Orders, order items | Read own; created only via `place_order`   | Read all (`orders.view`); status only through `admin_set_order_status` — no direct edits |
 | Products, categories | Read active rows                          | Read all (`catalog.view`); edit (`catalog.manage`); stock via `adjust_product_stock` (`inventory.manage`) |
@@ -154,6 +183,7 @@ connected yet. The schema is ready for one:
 | Product reviews    | Read published reviews (public columns only); write through `submit_product_review` after a delivered order | Moderate (`reviews.manage`) |
 | Staff activity     | No access                                   | All (`security.view`, `staff.manage`); order history only for other staff |
 | Media bucket       | View files by URL                           | List (`catalog.view`); upload and delete (`catalog.manage`) |
+| Avatars bucket     | View by URL; upload, replace and delete inside their own folder only | Same as any signed-in customer |
 | Newsletter, contact messages | Submit only (via functions), can't read back | Admins and super admins read |
 
 ## Admin panel

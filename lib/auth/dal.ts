@@ -9,6 +9,11 @@ import { createClient } from "@/lib/supabase/server";
 export type SessionUser = {
   id: string;
   email: string;
+  /**
+   * Profile photo: the one the customer uploaded on /account/profile, or one the identity
+   * provider supplied (a Google sign-in, say). Null falls back to their initials.
+   */
+  avatarUrl: string | null;
   profile: {
     firstName: string;
     lastName: string;
@@ -43,13 +48,16 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name,last_name,phone,role")
+    .select("first_name,last_name,phone,role,avatar_url")
     .eq("id", user.id)
     .maybeSingle();
 
   return {
     id: user.id,
     email: user.email ?? "",
+    avatarUrl:
+      imageUrlOrNull(profile?.avatar_url) ??
+      imageUrlOrNull(user.user_metadata?.avatar_url ?? user.user_metadata?.picture),
     profile: {
       firstName: profile?.first_name ?? "",
       lastName: profile?.last_name ?? "",
@@ -58,6 +66,31 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
     },
   };
 });
+
+/**
+ * Only an http(s) URL is passed on. Both sources are writable by the account itself — the
+ * avatar column by grant, user metadata through the auth API — so anything else (a data: or
+ * javascript: value) must never reach an img tag.
+ */
+function imageUrlOrNull(value: unknown): string | null {
+  return typeof value === "string" && /^https?:\/\//i.test(value) ? value : null;
+}
+
+/** "Jane Doe", or the part of the email before the @ while the profile has no name yet. */
+export function displayName(user: SessionUser): string {
+  const name = `${user.profile.firstName} ${user.profile.lastName}`.trim();
+  return name || user.email.split("@")[0] || "My account";
+}
+
+/** "JD" for the monogram shown when there is no profile photo. */
+export function initials(user: SessionUser): string {
+  const letters = displayName(user)
+    .split(/[\s._-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0));
+  return letters.join("").toUpperCase();
+}
 
 /**
  * The signed-in staff member and what they may do, or null for customers and visitors.

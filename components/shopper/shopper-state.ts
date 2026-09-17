@@ -3,9 +3,17 @@ import { useSyncExternalStore } from "react";
 // Client-side snapshot of /api/shopper shared by the header and heart icons. It is
 // refreshed on navigation (ShopperSync) and after every cart or wishlist change.
 
-export type ShopperState = { signedIn: boolean; cartCount: number; wishlist: string[] };
+export type ShopperState = {
+  signedIn: boolean;
+  cartCount: number;
+  wishlist: string[];
+  /** Who is signed in, for the greeting in the top band. Empty for visitors. */
+  name: string;
+  initials: string;
+  avatarUrl: string | null;
+};
 
-const initialState: ShopperState = { signedIn: false, cartCount: 0, wishlist: [] };
+const initialState: ShopperState = { signedIn: false, cartCount: 0, wishlist: [], name: "", initials: "", avatarUrl: null };
 
 let state = initialState;
 let latestRequest = 0;

@@ -1,12 +1,16 @@
 import { Sparkles } from "lucide-react";
 import { siteConfig } from "@/lib/site-config";
 
-/** Header/footer logo: the image in siteConfig.brand.logoSrc if set, otherwise the text wordmark. */
+/**
+ * Header/footer logo: the logo file set for this tone in siteConfig.brand — logoSrc on light
+ * backgrounds, logoSrcDark on dark ones — otherwise the text wordmark.
+ */
 export function BrandLogo({ tone = "light" }: { tone?: "light" | "dark" }) {
   const { brand, name } = siteConfig;
+  const logoSrc = tone === "dark" ? brand.logoSrcDark : brand.logoSrc;
 
-  if (brand.logoSrc) {
-    return <img src={brand.logoSrc} alt={name} className="h-11 w-auto" />;
+  if (logoSrc) {
+    return <img src={logoSrc} alt={name} className="h-11 w-auto" />;
   }
 
   const light = tone === "light";

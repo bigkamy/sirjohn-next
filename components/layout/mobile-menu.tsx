@@ -3,6 +3,7 @@
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { navIcon } from "@/components/layout/nav-icons";
 
 type MobileMenuProps = {
   items: { label: string; href: string }[];
@@ -51,16 +52,20 @@ export function MobileMenu({ items, categories }: MobileMenuProps) {
           </form>
 
           <nav aria-label="Mobile" className="mt-4 grid gap-1">
-            {items.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={close}
-                className="rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-[#f7f9f7] hover:text-emerald-700"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {items.map((item) => {
+              const Icon = navIcon(item.label);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={close}
+                  className="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium text-slate-700 hover:bg-[#f7f9f7] hover:text-emerald-700"
+                >
+                  <Icon size={16} aria-hidden className="shrink-0 text-emerald-700/70" />
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}

@@ -2,6 +2,7 @@
 
 import { Heart, ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import { IconTooltip } from "@/components/layout/icon-tooltip";
 import { useShopperState } from "@/components/shopper/shopper-state";
 
 const iconLinkClass =
@@ -17,18 +18,22 @@ export function HeaderShortcuts() {
 
   return (
     <>
-      <Link
-        href="/account/wishlist"
-        aria-label={wishlist.length > 0 ? `Wishlist, ${wishlist.length} items` : "Wishlist"}
-        className={iconLinkClass}
-      >
-        <Heart size={18} />
-        {wishlist.length > 0 && <span className={`${badgeClass} bg-emerald-600`}>{badgeText(wishlist.length)}</span>}
-      </Link>
-      <Link href="/cart" aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"} className={iconLinkClass}>
-        <ShoppingCart size={18} />
-        {cartCount > 0 && <span className={`${badgeClass} bg-[#0f172a]`}>{badgeText(cartCount)}</span>}
-      </Link>
+      <IconTooltip label="Wishlist">
+        <Link
+          href="/account/wishlist"
+          aria-label={wishlist.length > 0 ? `Wishlist, ${wishlist.length} items` : "Wishlist"}
+          className={iconLinkClass}
+        >
+          <Heart size={18} />
+          {wishlist.length > 0 && <span className={`${badgeClass} bg-emerald-600`}>{badgeText(wishlist.length)}</span>}
+        </Link>
+      </IconTooltip>
+      <IconTooltip label="Cart">
+        <Link href="/cart" aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"} className={iconLinkClass}>
+          <ShoppingCart size={18} />
+          {cartCount > 0 && <span className={`${badgeClass} bg-[#0f172a]`}>{badgeText(cartCount)}</span>}
+        </Link>
+      </IconTooltip>
     </>
   );
 }
