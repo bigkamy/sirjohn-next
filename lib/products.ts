@@ -112,17 +112,27 @@ function mapProductRow(row: ProductRow): Product {
   };
 }
 
+/**
+ * Two conditions have to hold before a product reaches a customer: it is active, and it has
+ * a price. The price guard is deliberate belt and braces — a product imported or created
+ * without one would otherwise go on sale at ₹0, and hiding it costs nothing, because a
+ * ₹0 product is never something the store means to sell. The admin panel is unaffected: it
+ * reads through lib/admin-products.ts and still lists and edits every row.
+ */
+const MINIMUM_SELLABLE_PRICE = 0;
+
 // The sample catalog is only for local development without Supabase. Once Supabase is
 // configured, failures surface as errors instead of silently showing sample products.
 export async function getProducts(): Promise<Product[]> {
   if (!isSupabaseConfigured()) {
-    return sampleProducts;
+    return sampleProducts.filter((product) => product.price > MINIMUM_SELLABLE_PRICE);
   }
 
   const { data, error } = await createPublicClient()
     .from("products")
     .select(PRODUCT_COLUMNS)
     .eq("is_active", true)
+    .gt("price", MINIMUM_SELLABLE_PRICE)
     .order("created_at", { ascending: false })
     .order("id");
 
@@ -140,13 +150,19 @@ export const getProductById = cache((id: number) => findProduct("id", id));
 
 async function findProduct(column: "slug" | "id", value: string | number): Promise<Product | undefined> {
   if (!isSupabaseConfigured()) {
-    return sampleProducts.find((product) => product[column] === value);
+    return sampleProducts.find(
+      (product) => product[column] === value && product.price > MINIMUM_SELLABLE_PRICE,
+    );
   }
 
+  // Same two conditions as getProducts, so an unpriced product 404s on its own page as well
+  // as vanishing from the listings — and addToCart, which resolves the product this way,
+  // refuses it too.
   const { data, error } = await createPublicClient()
     .from("products")
     .select(PRODUCT_COLUMNS)
     .eq("is_active", true)
+    .gt("price", MINIMUM_SELLABLE_PRICE)
     .eq(column, value)
     .maybeSingle();
 
