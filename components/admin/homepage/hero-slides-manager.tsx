@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Eye, EyeOff, ImageIcon, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, ImageIcon, Trash2 } from "lucide-react";
 import { useTransition } from "react";
 import { HeroSlideForm } from "@/components/admin/homepage/hero-slide-form";
 import { HeroSlidePreview } from "@/components/admin/homepage/hero-slide-preview";
@@ -9,10 +9,18 @@ import { ConfirmButton } from "@/components/admin/ui/confirm-button";
 import { buttonClass } from "@/components/admin/ui/styles";
 import { useToast } from "@/components/admin/ui/toast";
 import type { AdminHeroSlide } from "@/lib/admin-home-hero";
-import { deleteHeroSlide, moveHeroSlide, setHeroSlideActive } from "@/lib/admin-home-hero-actions";
+import { deleteHeroSlide, duplicateHeroSlide, moveHeroSlide, setHeroSlideActive } from "@/lib/admin-home-hero-actions";
 import { NETWORK_ERROR } from "@/lib/messages";
 
-export function HeroSlideRow({ slide, isFirst, isLast }: { slide: AdminHeroSlide; isFirst: boolean; isLast: boolean }) {
+type HeroSlideRowProps = {
+  slide: AdminHeroSlide;
+  isFirst: boolean;
+  isLast: boolean;
+  /** False once the list is full, which is when the database would refuse another slide. */
+  canDuplicate: boolean;
+};
+
+export function HeroSlideRow({ slide, isFirst, isLast, canDuplicate }: HeroSlideRowProps) {
   const toast = useToast();
   const [pending, startTransition] = useTransition();
 
@@ -77,6 +85,15 @@ export function HeroSlideRow({ slide, isFirst, isLast }: { slide: AdminHeroSlide
       <div className="flex flex-wrap gap-2">
         <HeroSlideForm slide={slide} />
         <HeroSlidePreview slide={slide} />
+        <button
+          type="button"
+          disabled={pending || !canDuplicate}
+          title={canDuplicate ? undefined : "The slider is full — delete a slide first."}
+          onClick={() => run(() => duplicateHeroSlide(slide.id))}
+          className={buttonClass("secondary", "sm")}
+        >
+          <Copy size={13} aria-hidden /> Duplicate
+        </button>
         <button
           type="button"
           disabled={pending}

@@ -147,6 +147,59 @@ export async function setHeroSlideActive(id: number, active: boolean): Promise<R
   return { ok: true, message: active ? "Slide is now showing on the home page." : "Slide is hidden from the home page." };
 }
 
+/** The database allows 80 characters; "Copy of …" has to fit inside that. */
+const COPY_PREFIX = "Copy of ";
+const copyTitle = (title: string) =>
+  `${COPY_PREFIX}${title}`.length <= 80 ? `${COPY_PREFIX}${title}` : `${COPY_PREFIX}${title}`.slice(0, 79).trimEnd() + "…";
+
+/**
+ * Copies a slide to the end of the list, hidden, so a near-identical variant doesn't have to
+ * be typed out again. It arrives hidden on purpose: a duplicate is a draft until it has been
+ * edited, and publishing it by accident would put the same slide on the home page twice.
+ */
+export async function duplicateHeroSlide(id: number): Promise<Result> {
+  await requirePermission("content.manage", "/admin/homepage");
+  if (!isPositiveInteger(id)) {
+    return { ok: false, message: "This slide could not be found." };
+  }
+
+  const supabase = await createClient();
+  const { data: source, error: readError } = await supabase
+    .from("home_hero_slides")
+    .select("image_url,image_alt,title,subtitle,button_text,button_url")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (readError || !source) {
+    if (readError) await logAdminError("hero.duplicate", "hero_slide", String(id), readError.message);
+    return { ok: false, message: "This slide could not be found." };
+  }
+
+  const { data, error } = await supabase
+    .from("home_hero_slides")
+    .insert({ ...source, title: copyTitle(source.title), is_active: false })
+    .select("id,sort_order,title")
+    .single();
+
+  if (error) {
+    // The same database trigger that guards the add form counts the slides here.
+    if (error.message.includes("too_many_slides")) {
+      return { ok: false, message: FULL_MESSAGE };
+    }
+    await logAdminError("hero.duplicate", "hero_slide", String(id), error.message);
+    return { ok: false, message: "We couldn't duplicate this slide. Please try again." };
+  }
+
+  await logAdminEvent(
+    "hero.duplicated",
+    "hero_slide",
+    String(data.id),
+    `Duplicated hero slide ${id} as slide ${data.sort_order}: ${shorten(data.title)}`,
+  );
+  invalidateHero();
+  return { ok: true, message: `Copied to position ${data.sort_order}, hidden until you publish it.` };
+}
+
 /**
  * Moves one slide up or down. The whole order is sent to reorder_home_hero_slides, which
  * rewrites it 1..n in a single statement, so two positions can never clash.

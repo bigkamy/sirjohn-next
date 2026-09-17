@@ -61,7 +61,7 @@ export default async function Page() {
         ) : (
           <ul className="divide-y divide-slate-100">
             {slides.map((slide, index) => (
-              <HeroSlideRow key={slide.id} slide={slide} isFirst={index === 0} isLast={index === slides.length - 1} />
+              <HeroSlideRow key={slide.id} slide={slide} isFirst={index === 0} isLast={index === slides.length - 1} canDuplicate={!full} />
             ))}
           </ul>
         )}
