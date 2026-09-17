@@ -15,6 +15,12 @@ type ProductCardProps = {
   slug: string;
   /** Demo data: shown with a "Sample" label instead of the marketing badge. */
   isSample?: boolean;
+  /**
+   * Admin preview (/admin/products/preview): the card exactly as the shop draws it, minus the
+   * cart and wishlist controls. A hidden product can't be added to a cart anyway, so the
+   * buttons would only ever report failure, and the note below says what a customer would see.
+   */
+  preview?: string;
 };
 
 export function ProductCard({
@@ -28,6 +34,7 @@ export function ProductCard({
   reviews = 0,
   slug,
   isSample = false,
+  preview,
 }: ProductCardProps) {
   const formatPrice = (value: number) =>
     new Intl.NumberFormat("en-IN", {
@@ -55,11 +62,13 @@ export function ProductCard({
             {badge}
           </span>
         ) : null}
-        <WishlistButton
-          slug={slug}
-          name={name}
-          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-slate-700 shadow-sm backdrop-blur transition hover:bg-white disabled:opacity-60"
-        />
+        {!preview && (
+          <WishlistButton
+            slug={slug}
+            name={name}
+            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/85 text-slate-700 shadow-sm backdrop-blur transition hover:bg-white disabled:opacity-60"
+          />
+        )}
       </div>
 
       <div className="space-y-4 p-5">
@@ -96,15 +105,21 @@ export function ProductCard({
         </div>
 
         <div className="flex items-center gap-3 pt-2">
-          <AddToCartButton
-            slug={slug}
-            optionsHref={`/product/${slug}`}
-            wrapperClassName="flex-1"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
-          >
-            <ShoppingBag size={16} />
-            Add to Cart
-          </AddToCartButton>
+          {preview ? (
+            <p className="w-full rounded-full border border-dashed border-slate-300 px-4 py-3 text-center text-xs font-semibold text-slate-500">
+              {preview}
+            </p>
+          ) : (
+            <AddToCartButton
+              slug={slug}
+              optionsHref={`/product/${slug}`}
+              wrapperClassName="flex-1"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0f172a] px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
+            >
+              <ShoppingBag size={16} />
+              Add to Cart
+            </AddToCartButton>
+          )}
         </div>
       </div>
     </article>

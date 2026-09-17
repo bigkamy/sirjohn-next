@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package, Plus } from "lucide-react";
+import { Eye, Package, Plus } from "lucide-react";
 import { ProductsTable } from "@/components/admin/products/products-table";
 import { RemoveSamplesButton } from "@/components/admin/remove-samples-button";
 import { FilterBar, pageParam, Pagination, textParam } from "@/components/admin/ui/filter-bar";
@@ -42,14 +42,19 @@ export default async function Page({ searchParams }: PageProps<"/admin/products"
         title="Products"
         description={`${total} ${total === 1 ? "product" : "products"}${filtered ? " match these filters" : ""}. Hidden products stay on past orders but can't be bought.`}
         actions={
-          canManage && (
-            <>
-              {sampleCount > 0 && <RemoveSamplesButton count={sampleCount} />}
-              <Link href="/admin/products/new" className={buttonClass("primary")}>
-                <Plus size={16} aria-hidden /> Add product
-              </Link>
-            </>
-          )
+          <>
+            <Link href="/admin/products/preview" className={buttonClass("secondary")}>
+              <Eye size={16} aria-hidden /> Preview cards
+            </Link>
+            {canManage && (
+              <>
+                {sampleCount > 0 && <RemoveSamplesButton count={sampleCount} />}
+                <Link href="/admin/products/new" className={buttonClass("primary")}>
+                  <Plus size={16} aria-hidden /> Add product
+                </Link>
+              </>
+            )}
+          </>
         }
       />
 
