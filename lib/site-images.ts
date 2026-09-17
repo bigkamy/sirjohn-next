@@ -7,10 +7,14 @@ const GOLF_COURSE = "https://images.unsplash.com/photo-1535131749006-b7f58c99034
 export const siteImages = {
   /** One image per home page hero slide. */
   hero: [GOLF_COURSE, GOLF_COURSE, GOLF_COURSE],
+  /**
+   * One image per home page banner, each from the product photography for that category, so
+   * the card shows what it links to. Null falls back to a plain branded panel.
+   */
   banners: {
-    clubs: GOLF_COURSE as string | null,
-    apparel: null as string | null,
-    bags: null as string | null,
+    clubs: "/images/Product/complete-club-set.png" as string | null,
+    apparel: "/images/Product/compression-arm-sleeve.png" as string | null,
+    bags: "/images/Product/tour-bag-headcover-collection.png" as string | null,
   },
   /** "Follow our story" gallery on the home page. */
   story: [] as string[],
