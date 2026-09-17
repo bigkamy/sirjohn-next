@@ -12,15 +12,25 @@ import { siteConfig } from "@/lib/site-config";
 /** The first categories by display order (set in /admin/categories) appear in the menu. */
 const MENU_CATEGORIES = 4;
 
+/**
+ * Categories deliberately kept out of the menu. Applied after the slice above rather than
+ * before, so leaving one out doesn't pull the next category up to take its place — the menu
+ * gets shorter instead of quietly swapping in Footwear or Balls.
+ */
+const MENU_EXCLUDED_CATEGORIES = new Set(["Clubs", "Apparel", "Accessories"]);
+
 export function SiteHeader({ categories }: { categories: string[] }) {
   const { contact, country } = siteConfig;
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Shop", href: "/shop" },
-    ...categories.slice(0, MENU_CATEGORIES).map((category) => ({
-      label: category,
-      href: `/shop?category=${encodeURIComponent(category)}`,
-    })),
+    ...categories
+      .slice(0, MENU_CATEGORIES)
+      .filter((category) => !MENU_EXCLUDED_CATEGORIES.has(category))
+      .map((category) => ({
+        label: category,
+        href: `/shop?category=${encodeURIComponent(category)}`,
+      })),
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
   ];
