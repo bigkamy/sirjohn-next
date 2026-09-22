@@ -67,3 +67,45 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/*
+ * Hero backdrop. The cart crosses the course along the bottom of the hero card, and its
+ * wheels turn as it goes. Anyone who asked for less motion keeps the drawing and loses the
+ * movement: the cart parks near the left of the card instead of driving.
+ */
+@keyframes hero-cart-drive {
+  from {
+    transform: translateX(-9rem);
+  }
+  to {
+    /* The track is as wide as the card, so 100% carries the cart clean off its right edge. */
+    transform: translateX(100%);
+  }
+}
+
+@keyframes hero-cart-roll {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hero-cart-drive {
+  animation: hero-cart-drive 22s linear infinite;
+}
+
+.hero-cart-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hero-cart-roll 1.5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cart-drive {
+    animation: none;
+    transform: translateX(6%);
+  }
+
+  .hero-cart-wheel {
+    animation: none;
+  }
+}

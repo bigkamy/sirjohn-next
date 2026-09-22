@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { HeroBackdrop } from "@/components/home/hero-backdrop";
 import type { HeroSlide } from "@/lib/home-hero";
 import { siteConfig } from "@/lib/site-config";
 import { isExternalLink } from "@/lib/validation";
@@ -81,7 +82,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(15,23,42,0.06),transparent_45%)]" />
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 lg:px-8">
         <div
-          className="overflow-hidden rounded-[32px] border border-[#eee7d9] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]"
+          className="relative overflow-hidden rounded-[32px] border border-[#eee7d9] bg-white shadow-[0_25px_70px_rgba(15,23,42,0.08)]"
           style={{ touchAction: "pan-y" }}
           onPointerDown={(event) => {
             startX.current = event.clientX;
@@ -96,8 +97,11 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             startX.current = null;
           }}
         >
-          {/* One grid cell holds every slide, so the card keeps its height and nothing shifts. */}
-          <div className="grid">
+          <HeroBackdrop />
+
+          {/* One grid cell holds every slide, so the card keeps its height and nothing shifts.
+              Positioned so the slides paint over the backdrop rather than under it. */}
+          <div className="relative grid">
             {slides.map((slide, position) => {
               const current = position === index;
               const Heading = position === 0 ? "h1" : "h2";
