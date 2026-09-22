@@ -25,12 +25,8 @@ export const siteConfig = {
     shortName: "Sir John Golf",
     /** Logo shown on light backgrounds (the header), instead of the text wordmark. A file in /public. */
     logoSrc: "/images/SJ_New_H.svg" as string | null,
-    /**
-     * Logo for dark backgrounds (the footer). Left null because the artwork above is
-     * near-black and would disappear there, so the footer keeps the text wordmark. Set this
-     * to a light/reversed version of the logo to use it in the footer too.
-     */
-    logoSrcDark: null as string | null,
+    /** Reversed (white) logo shown on dark backgrounds (the footer). A file in /public. */
+    logoSrcDark: "/images/SH%20vertical%20white.webp" as string | null,
     /** Colours used for the generated icons and the browser theme colour. */
     primaryColor: "#0f172a",
     accentColor: "#d89634",
